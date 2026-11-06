@@ -1,0 +1,42 @@
+<!--
+Model card template, LoRA type style.
+Fields in double braces are filled when the release folder is built; the person reads and edits the result
+by hand before any upload. Every field name is lowercase with underscores.
+{{repo_links}} renders one sentence under "How this was made", naming the two tools that made the LoRA and
+where their source lives. It is the only link in the card that points at the tools; nothing in the tools
+points back at a model page.
+-->
+# {{title}}
+
+{{description}}
+
+- **Trigger:** `{{trigger}}`, first in the prompt
+- **Base family:** {{family}}; trained on {{base_model}}
+- **Suggested LoRA weight:** {{weight}}
+
+## The style
+
+{{summary}} {{adult_statement}}
+
+## How to prompt
+
+- Start with the trigger, then describe the content in plain words: `{{trigger}}, <what the image shows>`.
+- Leave style words out of the prompt; the trigger carries the look.
+- Negative prompt to start from: `{{negative}}`
+
+## Training
+
+- {{train_images}} training images of varied subjects and {{holdout_images}} held-out images; captions
+  describe content only, with the trigger first.
+- {{steps}} steps on {{family}}, rank {{rank}}, alpha {{alpha}}; the checkpoint was chosen from an eval grid
+  by a person, not by the last step.
+- Every training image was looked at and accepted by a person; every person shown is an adult.
+
+## Licence
+
+This LoRA: {{lora_licence}}. Base model: {{base_licence}}. Check the base model's own terms before any use
+they may restrict.
+
+## How this was made
+
+{{repo_links}}

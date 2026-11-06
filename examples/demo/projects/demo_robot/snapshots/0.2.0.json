@@ -1,0 +1,105 @@
+{
+  "schema": "kiln/snapshot/1",
+  "id": "demo_robot/0.2.0",
+  "project": "demo_robot",
+  "version": "0.2.0",
+  "from_version": "0.1.0",
+  "legacy_id": null,
+  "frozen_at": "2030-01-02T10:00:00+00:00",
+  "caption_level": "medium",
+  "trigger": "dmrbt",
+  "members_sha256": "26e788ff6e29b06960f7a1a86fd196d5278216eb8e2c0c9e0827e31b91d672ce",
+  "counts": {
+    "train": 10,
+    "holdout": 2,
+    "excluded": 0
+  },
+  "members": [
+    {
+      "image": "img-010af39c9f5c",
+      "split": "train",
+      "repeat": 1,
+      "sha256": "010af39c9f5c9ad620450421793c27c66197aa335b8b403733b5e86bb4b50d80",
+      "caption": "dmrbt, robot, front view, full body, standing relaxed, plain studio backdrop, orange work vest, clean anime illustration"
+    },
+    {
+      "image": "img-0f9fa34cfeb0",
+      "split": "train",
+      "repeat": 1,
+      "sha256": "0f9fa34cfeb0561e5c30ea2ea5dd71133017278b195f41e7400deccddb3d42ff",
+      "caption": "dmrbt, robot, profile view, close-up, head and shoulders, side view, clean anime illustration"
+    },
+    {
+      "image": "img-1569cbdc313a",
+      "split": "train",
+      "repeat": 1,
+      "sha256": "1569cbdc313a51f5a4a79ec44027b7f3379affdb43d75ea16f03491da1cae6f5",
+      "caption": "dmrbt, robot, front three quarter view, full body, holding a wrench, workshop, orange work vest, clean anime illustration"
+    },
+    {
+      "image": "img-3169ee163fb1",
+      "split": "train",
+      "repeat": 1,
+      "sha256": "3169ee163fb16b43b47daee163614726ca1dad9deb73d038171ead56e6202188",
+      "caption": "dmrbt, robot, back view, full body, looking at a shelf, back turned, orange work vest, clean anime illustration"
+    },
+    {
+      "image": "img-3775f9db33e9",
+      "split": "train",
+      "repeat": 1,
+      "sha256": "3775f9db33e9e510d378f5989820fe0fd15cb329b3eb7052ccc5d052a84ddb4e",
+      "caption": "dmrbt, robot, unusual view, wide shot, on a rooftop at dusk, wide shot, orange work vest, clean anime illustration"
+    },
+    {
+      "image": "img-52fbb8c0c8fd",
+      "split": "train",
+      "repeat": 1,
+      "sha256": "52fbb8c0c8fd9011bb8440f5269f184a95eaaf7fa231b26fb04cd0cbcd579401",
+      "caption": "dmrbt, robot, front three quarter view, medium shot, waving, plain studio backdrop, orange work vest, clean anime illustration"
+    },
+    {
+      "image": "img-634749b7893a",
+      "split": "holdout",
+      "repeat": 1,
+      "sha256": "634749b7893ad6f6c7c911b97f7caa449bb8b1b876a09a9f94011a5c1f90bf11",
+      "caption": "dmrbt, robot, front view, medium shot, sitting on a crate, workshop, orange work vest, clean anime illustration"
+    },
+    {
+      "image": "img-b3ea5309388f",
+      "split": "holdout",
+      "repeat": 1,
+      "sha256": "b3ea5309388ff34b817819350c6315bdbbfc3100a113726fee9be7ba9eae3c55",
+      "caption": "dmrbt, robot, back view, medium shot, at a workbench, back turned, orange work vest, clean anime illustration"
+    },
+    {
+      "image": "img-b5125d1912fa",
+      "split": "train",
+      "repeat": 1,
+      "sha256": "b5125d1912fa1843f73b71d37267e3267e8bc9128af2e7c93fb917f3ea89275e",
+      "caption": "dmrbt, robot, rear three quarter view, medium shot, carrying a toolbox, plain backdrop, orange work vest, clean anime illustration"
+    },
+    {
+      "image": "img-ea5b9f30d26c",
+      "split": "train",
+      "repeat": 1,
+      "sha256": "ea5b9f30d26cbadb66290deaa10cfec13a1355eb3eb42bb4e4a6d11bd096387c",
+      "caption": "dmrbt, robot, profile view, close-up, head and shoulders, side light, clean anime illustration"
+    },
+    {
+      "image": "img-ef2052a894f8",
+      "split": "train",
+      "repeat": 1,
+      "sha256": "ef2052a894f86c9b416f7cbe518856f1bb9c0b22c422d52f2fe7e044ced7cc93",
+      "caption": "dmrbt, robot, front view, close-up, head and shoulders, calm, clean anime illustration"
+    },
+    {
+      "image": "img-fa40ee72d799",
+      "split": "train",
+      "repeat": 1,
+      "sha256": "fa40ee72d79926f10e8df83b416c28db079f4eeca425a7d0f38cd71ea5afc079",
+      "caption": "dmrbt, robot, profile view, full body, walking, plain backdrop, orange work vest, clean anime illustration"
+    }
+  ],
+  "manifest_sha256": null,
+  "notes": "0.1.0 plus five new images; one more holdout"
+}

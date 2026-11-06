@@ -1,0 +1,81 @@
+# Checkpoint triage suite for a character-anime LoRA: 12 scene prompts, each rendered with the 2 seeds below.
+#
+# A prompt names only the scene: pose, camera, framing and light. The runner builds the full prompt, adding
+# the trigger, the class word and, unless the framing is close, the default outfit. The `columns` render each
+# prompt three ways: the base model alone (what the base draws without help), the LoRA with its trigger (the
+# subject the run teaches) and the LoRA without its trigger (how far the subject bleeds into every image).
+# Keep these words and seeds apart from the training captions, so a checkpoint is judged on prompts it never
+# trained on. Read checkpoints of one run side by side, on one version of this file and its seeds.
+
+schema: kiln/eval-suite/1
+suite_id: core
+name: Checkpoint triage suite
+version: 1.0.0
+seeds: [3517, 8042]
+columns: [base, lora, lora-no-trigger]
+prompt_assembly:
+  template: "{trigger}, {class_word}, {prompt}"
+  trigger_applied_by: runner
+  outfit_applied_by: runner, for every prompt whose framing is not close
+  negative_base: lowres, bad anatomy, extra limbs, signature, watermark, text
+prompts:
+  - id: C01
+    category: identity_neutral
+    framing: medium
+    text: seen from the front at chest height, hands loose at the sides, pale grey studio wall, flat overcast light
+    stress_case: the design reads at once with nothing in the scene to help it
+  - id: C02
+    category: identity_neutral
+    framing: full
+    text: standing on a plain floor, the whole figure in frame from head to shoes, white backdrop, even light from above
+    stress_case: the proportions read as an adult from head to feet
+  - id: C03
+    category: angle
+    framing: medium
+    text: turned halfway to the right, glancing back over one shoulder, muted blue backdrop, one soft lamp
+    stress_case: the geometry of the head at three-quarter
+  - id: C04
+    category: profile
+    framing: close
+    text: side view facing left, head and neck only, light grey background, neutral face
+    stress_case: the silhouette of the head in profile
+  - id: C05
+    category: profile
+    framing: close
+    text: side view facing right, head and neck only, warm grey background, thin edge light from behind
+    stress_case: a one-sided feature stays on its own side
+  - id: C06
+    category: angle
+    framing: full
+    text: seen from slightly below, standing on a stone step, clear sky behind, midday sun
+    stress_case: foreshortening keeps the proportions
+  - id: C07
+    category: angle
+    framing: medium
+    text: seen from above, sitting cross-legged on a wooden floor, studying a folded paper map, window light
+    stress_case: the head from above; hands holding a small object
+  - id: C08
+    category: expression
+    framing: close
+    text: close on the face, eyes wide with surprise, brows raised high, plain cream background
+    stress_case: the fixed features hold through surprise
+  - id: C09
+    category: expression
+    framing: close
+    text: close on the face, a small tired smile, eyes half closed, dim amber light
+    stress_case: a soft expression keeps the mouth rule
+  - id: C10
+    category: back_view
+    framing: full
+    text: seen from behind, walking away along a gravel path between hedges, grey morning
+    stress_case: the back of the head and the outfit from behind
+  - id: C11
+    category: motion
+    framing: full
+    text: on tiptoe reaching for a high shelf in a small kitchen, side light from a window
+    stress_case: limbs and hands in a stretched pose
+  - id: C12
+    category: lighting
+    framing: medium
+    text: under a single green neon sign at night, rain running down the window behind, strong colour cast
+    stress_case: the colours stay recognisable under coloured light

@@ -1,0 +1,178 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:kiln:type-dataset-toml:1",
+  "title": "kiln LoRA type: dataset.toml",
+  "description": "The dataset template of a LoRA type (types/<id>/dataset.toml) for kohya-ss sd-scripts. The file uses exactly the variables listed in `x-kiln-variables`; `kiln types check` replaces each with its sample value, parses the result as TOML and validates it against this schema. The `kiln` table is read by kiln (network rank, alpha, learning rate become trainer flags) and removed before the copy reaches sd-scripts, whose dataset config accepts only `general` and `datasets`.",
+  "x-file": "types/<type>/dataset.toml",
+  "x-owner": "maintainers",
+  "x-kind": "record",
+  "x-kiln-variables": {
+    "DATASET_ROOT": {
+      "type": "string",
+      "sample": "datasets/0.1.0",
+      "from": "the materialised dataset version under the project, forward slashes, relative to the run's working folder"
+    },
+    "FLIP_AUG": {
+      "type": "boolean",
+      "sample": true,
+      "from": "intake question 10, symmetric"
+    },
+    "RANK": {
+      "type": "integer",
+      "sample": 32,
+      "from": "the family's training.network.dim unless the project overrides it"
+    },
+    "ALPHA": {
+      "type": "number",
+      "sample": 32,
+      "from": "the family's training.network.alpha unless the project overrides it"
+    },
+    "LR": {
+      "type": "number",
+      "sample": 0.0001,
+      "from": "the family's training.optimizer.learning_rate unless the project overrides it"
+    }
+  },
+  "type": "object",
+  "required": [
+    "kiln",
+    "general",
+    "datasets"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "kiln": {
+      "type": "object",
+      "required": [
+        "network"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "network": {
+          "type": "object",
+          "required": [
+            "rank",
+            "alpha",
+            "learning_rate"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "rank": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "alpha": {
+              "type": "number",
+              "exclusiveMinimum": 0
+            },
+            "learning_rate": {
+              "type": "number",
+              "exclusiveMinimum": 0
+            }
+          }
+        }
+      }
+    },
+    "general": {
+      "type": "object",
+      "required": [
+        "caption_extension",
+        "keep_tokens",
+        "shuffle_caption",
+        "caption_dropout_rate",
+        "enable_bucket",
+        "flip_aug"
+      ],
+      "properties": {
+        "caption_extension": {
+          "const": ".txt"
+        },
+        "keep_tokens": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "shuffle_caption": {
+          "type": "boolean"
+        },
+        "caption_dropout_rate": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "enable_bucket": {
+          "type": "boolean"
+        },
+        "min_bucket_reso": {
+          "type": "integer",
+          "minimum": 64
+        },
+        "max_bucket_reso": {
+          "type": "integer",
+          "minimum": 64
+        },
+        "bucket_reso_steps": {
+          "type": "integer",
+          "minimum": 8
+        },
+        "flip_aug": {
+          "type": "boolean"
+        }
+      }
+    },
+    "datasets": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": [
+          "resolution",
+          "batch_size",
+          "subsets"
+        ],
+        "properties": {
+          "resolution": {
+            "type": "array",
+            "minItems": 2,
+            "maxItems": 2,
+            "items": {
+              "type": "integer",
+              "minimum": 64
+            }
+          },
+          "batch_size": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "num_repeats": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "validation_split": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1
+          },
+          "validation_seed": {
+            "type": "integer"
+          },
+          "subsets": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "object",
+              "required": [
+                "image_dir"
+              ],
+              "properties": {
+                "image_dir": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

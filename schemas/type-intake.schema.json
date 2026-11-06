@@ -1,0 +1,189 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:kiln:type-intake:1",
+  "title": "kiln LoRA type: intake.yaml",
+  "description": "The intake questionnaire of a LoRA type (types/<id>/intake.yaml): 14 numbered questions, each with a default and an example answer for the synthetic demo subject. `kiln project new` copies it into a project; the person fills every `answer`. Checked by `kiln types check`.",
+  "x-file": "types/<type>/intake.yaml",
+  "x-owner": "maintainers",
+  "x-kind": "record",
+  "type": "object",
+  "required": [
+    "schema",
+    "type",
+    "version",
+    "policy",
+    "questions"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "schema": {
+      "const": "kiln/type-intake/1"
+    },
+    "type": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9-]*$",
+      "description": "the type id; equals the folder name"
+    },
+    "version": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "about": {
+      "type": "string",
+      "description": "one paragraph for the person who fills the intake"
+    },
+    "policy": {
+      "type": "object",
+      "required": [
+        "subjects",
+        "refusal"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "subjects": {
+          "const": "fictional-adults-only"
+        },
+        "refusal": {
+          "type": "string",
+          "minLength": 20,
+          "description": "the sentence kiln prints when it refuses a subject"
+        }
+      }
+    },
+    "not_asked": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "topic",
+          "default"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "topic": {
+            "type": "string"
+          },
+          "default": {
+            "type": [
+              "string",
+              "number",
+              "boolean",
+              "array",
+              "object",
+              "null"
+            ]
+          },
+          "note": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "questions": {
+      "type": "array",
+      "minItems": 14,
+      "maxItems": 14,
+      "items": {
+        "$ref": "#/$defs/question"
+      }
+    }
+  },
+  "$defs": {
+    "question": {
+      "type": "object",
+      "required": [
+        "n",
+        "id",
+        "question",
+        "you_give",
+        "default",
+        "required",
+        "feeds",
+        "example",
+        "answer"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "n": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 14
+        },
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9_]*$"
+        },
+        "question": {
+          "type": "string",
+          "minLength": 5
+        },
+        "you_give": {
+          "type": "string",
+          "description": "what the person answers with"
+        },
+        "drafts": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "what an assistant may draft from the answer, for the person's approval; never the answer itself"
+        },
+        "choices": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string"
+          }
+        },
+        "default": {
+          "type": [
+            "string",
+            "number",
+            "boolean",
+            "array",
+            "null"
+          ],
+          "description": "used when the answer stays null; null means there is no default"
+        },
+        "required": {
+          "type": "boolean",
+          "description": "true: kiln refuses to scaffold while the answer is null"
+        },
+        "applies": {
+          "type": "boolean",
+          "description": "false: the question does not apply to this type; `default` explains what is used instead"
+        },
+        "feeds": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "the files and fields the answer ends up in"
+        },
+        "note": {
+          "type": "string"
+        },
+        "example": {
+          "type": [
+            "string",
+            "number",
+            "boolean",
+            "array",
+            "null"
+          ],
+          "description": "an answer for the synthetic demo subject; never a default"
+        },
+        "answer": {
+          "type": [
+            "string",
+            "number",
+            "boolean",
+            "array",
+            "null"
+          ],
+          "description": "the person's answer; null in the shipped type"
+        }
+      }
+    }
+  }
+}

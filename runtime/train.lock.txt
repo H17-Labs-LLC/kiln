@@ -1,0 +1,38 @@
+# kiln training runtime: hand-pinned requirements for the trainer's own virtual environment.
+# Written by hand from recorded versions, never generated from an existing environment (a freeze would add an
+# editable line naming a local folder). Recorded 2026-11-05.
+#
+# Tested with: Python 3.12.6, Windows 11, NVIDIA 8 GB GPU, CUDA 12.8 wheels.
+# Trainer: kohya-ss sd-scripts, tag v0.12.3, commit cb70b96858477e716a2096292ab8aab433277f38 (Apache-2.0).
+#   The installer clones it at that commit and installs the clone itself in editable mode; that step is not a
+#   line in this file. Keep the trainer in its own environment: its transformers/diffusers pins differ from
+#   what ComfyUI's environment runs, and sharing one environment breaks custom nodes later and silently.
+#
+# 1. torch first, from the PyTorch CUDA 12.8 wheel index (the installer passes the index; sd-scripts' own
+#    requirements do not include torch):
+torch==2.11.0+cu128
+torchvision    # not recorded; the build that matches torch 2.11.0 on the same index
+#
+# 2. sd-scripts v0.12.3 requirements (its pins, in its order):
+accelerate==1.15.0
+transformers==5.17.0
+diffusers[torch]==0.40.0
+ftfy==6.3.1
+opencv-python==4.10.0.84; platform_machine != "ARM64"
+einops==0.7.0
+bitsandbytes==0.50.2    # unpinned upstream; 0.50.2 is what the measured 8 GB runs used (AdamW8bit needs it)
+lion-pytorch==0.2.3
+schedulefree==1.4.1
+pytorch-optimizer==3.10.0
+prodigy-plus-schedule-free==1.9.2
+prodigyopt==1.1.2
+tensorboard; platform_machine != "ARM64"     # unpinned upstream; version not recorded
+tensorboardX; platform_machine == "ARM64"    # unpinned upstream; version not recorded
+safetensors==0.8.0
+toml==0.10.2
+voluptuous==0.15.2
+huggingface-hub==1.32.0
+imagesize==1.4.1
+numpy    # unpinned upstream; version not recorded
+rich==14.1.0
+sentencepiece==0.2.1

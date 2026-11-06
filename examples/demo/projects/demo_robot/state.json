@@ -1,0 +1,16 @@
+{
+  "schema": "kiln/state/1",
+  "project": "demo_robot",
+  "status": "curating",
+  "phase": null,
+  "goal": {
+    "kind": "new-version",
+    "new_version": "0.3.0",
+    "from_version": "0.2.0",
+    "from_easel_run": "run-20300101-001",
+    "set_at": "2030-01-04T09:00:00+00:00",
+    "note": "retrain on 0.2.0 plus the kept renders of the easel demo run"
+  },
+  "updated_at": "2030-01-04T09:00:00+00:00",
+  "legacy_id": null
+}

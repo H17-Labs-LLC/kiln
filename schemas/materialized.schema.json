@@ -1,0 +1,112 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:kiln:materialized:1",
+  "title": "a materialised dataset folder's record",
+  "description": "<home>/projects/<slug>/datasets/<version>/_meta/materialized-<version>.json, written by `kiln dataset materialize`. Same nine keys as the record the older tooling writes (plus `schema`), so its readers keep working. record_sha256_12 = the first 12 hex digits of sha256 over this object without record_sha256_12, serialised with Python's json.dumps(record, sort_keys=True) (default separators).",
+  "x-file": "<home>/projects/<slug>/datasets/<version>/_meta/materialized-<version>.json",
+  "x-owner": "tool",
+  "x-kind": "record",
+  "type": "object",
+  "required": [
+    "schema",
+    "snapshot_id",
+    "snapshot_manifest_sha256",
+    "materialized_at",
+    "caption_level",
+    "trigger_token",
+    "counts",
+    "directories",
+    "note",
+    "record_sha256_12"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "schema": {
+      "const": "kiln/materialized/1",
+      "description": "the format and its version; always the first key"
+    },
+    "snapshot_id": {
+      "$ref": "#/$defs/snapshot_id"
+    },
+    "snapshot_manifest_sha256": {
+      "$ref": "#/$defs/sha256"
+    },
+    "materialized_at": {
+      "$ref": "#/$defs/ts"
+    },
+    "caption_level": {
+      "type": "string"
+    },
+    "trigger_token": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "counts": {
+      "type": "object",
+      "required": [
+        "train",
+        "holdout"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "train": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "holdout": {
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    },
+    "directories": {
+      "type": "object",
+      "description": "relative to the instance root",
+      "required": [
+        "train",
+        "holdout"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "train": {
+          "$ref": "#/$defs/relpath"
+        },
+        "holdout": {
+          "$ref": "#/$defs/relpath"
+        }
+      }
+    },
+    "note": {
+      "type": "string"
+    },
+    "record_sha256_12": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{12}$"
+    }
+  },
+  "$defs": {
+    "relpath": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^(?![A-Za-z]:)(?!/)(?!.*\\\\)(?!(.*/)?\\.\\.(/|$)).+$",
+      "description": "a path relative to the root its record names: forward slashes, no drive, no leading slash, no `..`"
+    },
+    "sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$",
+      "description": "lower-case hex sha256 of the file bytes"
+    },
+    "snapshot_id": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9_]*/\\d+\\.\\d+\\.\\d+$",
+      "description": "a dataset snapshot id: <slug>/<version>"
+    },
+    "ts": {
+      "type": "string",
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}[T ]\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?(Z|[+-]\\d{2}:\\d{2})?$",
+      "description": "ISO 8601 time, for example 2030-01-01T00:00:00+00:00. New records always use T and carry the UTC offset; times exported from an older store may use a space and lack the offset."
+    }
+  }
+}

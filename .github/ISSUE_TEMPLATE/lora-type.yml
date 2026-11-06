@@ -1,0 +1,54 @@
+name: "LoRA type"
+description: "Add or change a LoRA type under types/<id>/."
+title: "[lora-type] <id>: <one line>"
+labels: ["lora-type"]
+body:
+  - type: markdown
+    attributes:
+      value: "A LoRA type is a folder of nine files that sets the intake, the caption rules, the checklist, the evaluation suite, the dataset settings and the thresholds for one kind of LoRA. Subjects are fictional adults only. Leave out private values: no absolute paths (write `<home>`, `<models_root>`), no names or account names, no tokens, no ids of your own records, and no description of any image. Vulnerabilities do not belong here: see SECURITY.md."
+  - type: input
+    id: type_id
+    attributes:
+      label: "type id"
+      description: "lowercase, as the folder name: types/<id>/"
+    validations:
+      required: true
+  - type: textarea
+    id: purpose
+    attributes:
+      label: "what it trains"
+      description: "the kind of subject or style, and how it differs from the shipped types"
+    validations:
+      required: true
+  - type: textarea
+    id: files
+    attributes:
+      label: "the nine files"
+      description: "what changes in each of intake.yaml, checklist.yaml, caption_rules.yaml, eval_suite.yaml, dataset.toml, thresholds.yaml, spec.template.json, card.md.tmpl and README.md"
+    validations:
+      required: true
+  - type: textarea
+    id: thresholds
+    attributes:
+      label: "thresholds and their evidence"
+      description: "each number with where it comes from; a number not yet validated is dated and marked: validate on your subject first"
+    validations:
+      required: true
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: "acceptance criteria"
+      description: "Written before the work starts: each one a command and the literal line it prints, or a test that passes. The pull request is judged against exactly these."
+    validations:
+      required: true
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: "Checks"
+      options:
+        - label: "`kiln types check` passes on the new folder."
+          required: false
+        - label: "No intake answer, caption rule or example makes a subject read as a minor or depicts a real person."
+          required: true
+        - label: "I removed private values: no absolute paths, names, account names, tokens or ids of my own records, and no images."
+          required: true

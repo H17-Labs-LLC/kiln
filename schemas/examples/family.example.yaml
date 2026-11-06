@@ -1,0 +1,78 @@
+# Example of kiln/family/1 (synthetic: demo_robot, 2030).
+schema: kiln/family/1
+id: demo_xl
+name: Demo XL
+status: listed
+inherits: null
+architecture:
+  kind: unet-sdxl
+  latent_channels: 4
+  text_encoders:
+  - clip-l
+  - clip-g
+  native_resolution: 1024
+description: a synthetic family for the schema example
+licence_summary:
+  status: unverified
+  name: null
+  text: 'unverified: read the model card'
+  url: https://example.invalid/demo-xl
+host_ram_gb:
+  train: 5.5
+  eval: 8.5
+  eval_includes_comfyui_server: true
+  basis: a prior for the example, not measured
+training:
+  supported: true
+  basis: the example's own recipe
+  trainer:
+    name: kohya-ss sd-scripts
+    version: v0.12.3
+  network:
+    module: networks.lora
+    dim: 32
+    alpha: 32
+    train_unet_only: true
+  optimizer:
+    type: AdamW8bit
+    args:
+    - weight_decay=0.01
+    learning_rate: 0.0001
+    lr_scheduler: cosine
+    lr_warmup_steps: 100
+  resolution:
+    base:
+    - 1024
+    - 1024
+    buckets:
+      enabled: true
+      min: 640
+      max: 1536
+      step: 64
+    batch_size: 1
+    gradient_accumulation_steps: 2
+  steps:
+    default: 1000
+    save_every: 200
+    guidance: save often, pick from the grid
+  sd_scripts_args:
+    network_dim: 32
+    mixed_precision: bf16
+    gradient_checkpointing: true
+  flags_8gb:
+  - flag: --gradient_checkpointing
+    reason: required at 8 GB
+  - item: low-memory trainer wrapper
+    reason: streams the base-model load
+  avoid:
+  - flag: --max_train_epochs
+    reason: overrides --max_train_steps
+    basis: launcher audit
+  measured_8gb:
+    date: '2030-01-01'
+    hardware: 8 GB VRAM, 32 GB host RAM
+    seconds_per_step: 6.5
+  eval_render:
+    prompt_prefix: ''
+    negative_extra: ''
+    clip_skip: 1

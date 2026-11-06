@@ -1,0 +1,25 @@
+{
+  "schema": "kiln/research-index/1",
+  "project": "demo_robot",
+  "pack_version": "v0.1.0",
+  "docs": [
+    {
+      "path": "research/v0.1.0/spec.md",
+      "kind": "spec",
+      "bytes": 1200,
+      "sha256": "c855d6662f75d4ef5be7964807a692bf09536be0319c1a12261e4f4fec1b0e22",
+      "source_zip": null,
+      "imported_at": "2030-01-01T00:10:00+00:00",
+      "legacy_id": null
+    },
+    {
+      "path": "research/v0.1.0/README.md",
+      "kind": "readme",
+      "bytes": 300,
+      "sha256": "76d7228a00dbc91149bf09f3d0e4c212cea9d1904c9b9eba2b16c4636709594e",
+      "source_zip": null,
+      "imported_at": "2030-01-01T00:10:00+00:00",
+      "legacy_id": null
+    }
+  ]
+}

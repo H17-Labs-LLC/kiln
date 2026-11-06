@@ -1,0 +1,42 @@
+{
+  "schema": "kiln/generation-manifest/1",
+  "project": "demo_robot",
+  "generated_at": "2030-01-01T00:50:00+00:00",
+  "backend": "codex",
+  "tool_version": "codex-cli 0.0.0-demo",
+  "model": "demo-image-model",
+  "thread_id": "00000000-0000-4000-8000-0000000000aa",
+  "job": {
+    "file": "jobs/batch-01.json",
+    "id": "A1",
+    "group": "A"
+  },
+  "spec_sha256": "8336025912ac209e4401ce0717e1957caac350ee5fc0f6bcf61487f25f9ba67a",
+  "prompt": "dmrbt, robot, front view, full body, standing relaxed, plain studio backdrop",
+  "references": [
+    "img-010af39c9f5c",
+    "img-52fbb8c0c8fd"
+  ],
+  "requested_count": 2,
+  "exit_code": 0,
+  "images": [
+    {
+      "file": "images/batch-01/A1-front_full-1.png",
+      "sha256": "010af39c9f5c9ad620450421793c27c66197aa335b8b403733b5e86bb4b50d80",
+      "width": 8,
+      "height": 8,
+      "bytes": 268,
+      "image": "img-010af39c9f5c"
+    }
+  ],
+  "verbatim": true,
+  "refs_sent": [
+    "image 1",
+    "image 2"
+  ],
+  "quota": null,
+  "failed_generations": 0,
+  "moderation_blocked": 0,
+  "errors": [],
+  "note": "one image arrived for two requested; header-only validation"
+}

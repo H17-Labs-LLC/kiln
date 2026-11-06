@@ -1,0 +1,28 @@
+<!--
+The demo project's model card template (a project copy of types/character-anime/card.md.tmpl, shortened).
+Fields in double braces are filled by `kiln release build`; the person reads and edits the result by hand.
+-->
+# {{title}}
+
+{{description}}
+
+- **Trigger:** `{{trigger}}`, first in the prompt
+- **Base family:** {{family}}; trained on {{base_model}}
+- **Suggested LoRA weight:** {{weight}}
+
+## The character
+
+{{adult_statement}} {{summary}}
+
+## Training
+
+{{train_images}} training images and {{holdout_images}} held out; {{steps}} steps, rank {{rank}}, alpha
+{{alpha}}. The checkpoint was chosen from an eval grid by a person.
+
+## Licence
+
+This LoRA: {{lora_licence}}. Base model: {{base_licence}}.
+
+## How this was made
+
+{{repo_links}}

@@ -1,0 +1,14 @@
+{
+  "schema": "kiln/pick-event/1",
+  "v": 1,
+  "source": "operator",
+  "by": "kiln review serve",
+  "at": "2030-01-03T17:00:00+00:00",
+  "kind": "checkpoint",
+  "run": "run-20300102-001",
+  "column": "s800",
+  "prompt": null,
+  "family": null,
+  "seed": null,
+  "note": "cleanest visor, hands right in 3 of 4"
+}

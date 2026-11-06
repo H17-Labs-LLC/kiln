@@ -1,0 +1,51 @@
+# Checklist skeleton for a style LoRA: the rules every training image is judged by. A style has no identity
+# checklist: the items describe the rendering (line, shading, palette, finish), never who or what is drawn.
+#
+# Each item is stated in every generation prompt that makes training images AND judged pass or fail per image
+# in review. Fill the items from intake question 3 (an assistant drafts them, the person approves); `example`
+# shows each item filled in for the synthetic demo style (demo_style).
+# Checked by `kiln types check style` against schemas/type-checklist.schema.json.
+
+schema: kiln/type-checklist/1
+type: style
+kind: style
+guidance:
+  - Keep 3-8 items, each one checkable by eye on a single image.
+  - Describe the rendering only; who or what an image shows is content and varies on purpose.
+  - State the rule positively first and at most one short "not" clause last; repeating a forbidden feature primes it.
+  - Use the person's own words once they exist.
+  - Change the text only with a new spec version and a decision record; images made under different text are never compared blind.
+vocabulary:
+  viewpoints: [front, front_three_quarter, profile, back, rear_three_quarter, unusual]
+  framings: [close, medium, full, wide]
+items:
+  - key: line
+    heading: "LINE: <SHORT RULE>"
+    text: Line weight, colour and character, or that there are no lines.
+    review: {label: Line, hint: "line weight and colour as stated"}
+    example: "LINE: thick even dark outlines around every shape; not sketchy."
+  - key: shading
+    heading: "SHADING: <SHORT RULE>"
+    text: How light and shadow are rendered.
+    review: {label: Shading, hint: "the shading method as stated"}
+    example: "SHADING: two-tone cel shading with hard edges; not soft gradients."
+  - key: palette
+    heading: "PALETTE: <SHORT RULE>"
+    text: The colours the style uses, and how saturated they are.
+    review: {label: Palette, hint: "colours within the stated palette"}
+    example: "PALETTE: muted teal, cream and rust; black only in the outlines."
+  - key: finish
+    heading: "FINISH: <SHORT RULE>"
+    text: The surface of the whole image, such as grain, texture or the lack of it.
+    review: {label: Finish, hint: "the stated surface over the whole image"}
+    example: "FINISH: a faint paper grain over the whole image; no glow."
+review_only:
+  - key: render
+    label: Clean render
+    hint: no artefacts, extra limbs, unwanted text or sheet layout
+  - key: adults_only
+    label: Adults only
+    hint: every person shown reads as an adult; reject the image otherwise
+  - key: variety
+    label: Varied content
+    hint: the subject is not one the set already has many of

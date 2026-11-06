@@ -1,0 +1,36 @@
+# Example of kiln/coverage/1 (synthetic: demo_robot, 2030).
+schema: kiln/coverage/1
+project: demo_robot
+gaps:
+- dimension: viewpoint
+  bucket: back
+  target: 3
+  current: 2
+  priority: normal
+  status: open
+  note: null
+  legacy_id: null
+- dimension: framing
+  bucket: close
+  target: 4
+  current: 3
+  priority: high
+  status: filling
+  note: the visor needs more close-ups
+  legacy_id: null
+- dimension: lighting
+  bucket: night
+  target: 2
+  current: 0
+  priority: low
+  status: open
+  note: null
+  legacy_id: null
+- dimension: viewpoint
+  bucket: profile
+  target: 3
+  current: 3
+  priority: normal
+  status: met
+  note: null
+  legacy_id: null

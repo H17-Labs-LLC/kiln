@@ -1,0 +1,123 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:kiln:caption-event:1",
+  "title": "one image's training caption at one moment",
+  "description": "One line of <home>/projects/<slug>/captions.jsonl: one caption per image; the latest line per image wins. Only `approved` captions are frozen or trained on. `source` is who wrote the text: operator, the second source, or a tool for drafts (for example kiln:captions propose).",
+  "x-file": "<home>/projects/<slug>/captions.jsonl",
+  "x-owner": "person / tool",
+  "x-kind": "event-line",
+  "type": "object",
+  "required": [
+    "schema",
+    "at",
+    "v",
+    "source",
+    "image",
+    "text",
+    "word_count",
+    "status"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "schema": {
+      "const": "kiln/caption-event/1",
+      "description": "the format and its version; always the first key"
+    },
+    "at": {
+      "$ref": "#/$defs/ts"
+    },
+    "v": {
+      "const": 1,
+      "description": "the line format's version: the number at the end of `schema`, so a reader can branch without parsing the string"
+    },
+    "source": {
+      "$ref": "#/$defs/who"
+    },
+    "by": {
+      "$ref": "#/$defs/by"
+    },
+    "image": {
+      "$ref": "#/$defs/img_id"
+    },
+    "text": {
+      "type": "string",
+      "minLength": 1
+    },
+    "word_count": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "status": {
+      "enum": [
+        "draft",
+        "approved",
+        "rejected"
+      ]
+    },
+    "basis": {
+      "enum": [
+        "prompt",
+        "manual",
+        "assistant",
+        "legacy"
+      ],
+      "description": "what the text started from"
+    },
+    "sheet": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/relpath"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "lint": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "the lint findings when the line was written"
+    },
+    "legacy_id": {
+      "$ref": "#/$defs/legacy_id"
+    }
+  },
+  "$defs": {
+    "by": {
+      "type": "string",
+      "minLength": 1,
+      "description": "the command that wrote the line, for example `kiln images label` (optional)"
+    },
+    "img_id": {
+      "type": "string",
+      "pattern": "^img-[0-9a-f]{12}$",
+      "description": "an image id: img-<sha256[:12]>"
+    },
+    "legacy_id": {
+      "type": [
+        "string",
+        "integer",
+        "null"
+      ],
+      "description": "the record's id in the store it was exported from; null for records made here. Kept so a migrated record can be traced back; never shown in public text"
+    },
+    "relpath": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^(?![A-Za-z]:)(?!/)(?!.*\\\\)(?!(.*/)?\\.\\.(/|$)).+$",
+      "description": "a path relative to the root its record names: forward slashes, no drive, no leading slash, no `..`"
+    },
+    "ts": {
+      "type": "string",
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}[T ]\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?(Z|[+-]\\d{2}:\\d{2})?$",
+      "description": "ISO 8601 time, for example 2030-01-01T00:00:00+00:00. New records always use T and carry the UTC offset; times exported from an older store may use a space and lack the offset."
+    },
+    "who": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9_-]*(:[^\\s].*)?$",
+      "description": "where the line's content comes from: `operator` (the person), the second source (policy.second_source_name, default `assistant`), or a tool, for example `kiln:images import` or `export:legacy`"
+    }
+  }
+}

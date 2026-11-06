@@ -1,0 +1,147 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:kiln:decision-frontmatter:1",
+  "title": "a decision's front matter",
+  "description": "The YAML front matter of <home>/projects/<slug>/decisions/dec-NNNN.md (between the two `---` lines); the Markdown body below it carries the reasoning. Opened by `kiln decide open`, closed by `kiln decide`; only the person decides.",
+  "x-file": "<home>/projects/<slug>/decisions/dec-NNNN.md (front matter)",
+  "x-owner": "person",
+  "x-kind": "record",
+  "type": "object",
+  "required": [
+    "schema",
+    "id",
+    "project",
+    "title",
+    "status",
+    "question",
+    "opened_at"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "schema": {
+      "const": "kiln/decision-frontmatter/1",
+      "description": "the format and its version; always the first key"
+    },
+    "id": {
+      "$ref": "#/$defs/dec_id"
+    },
+    "legacy_id": {
+      "$ref": "#/$defs/legacy_id"
+    },
+    "project": {
+      "$ref": "#/$defs/slug"
+    },
+    "title": {
+      "type": "string",
+      "minLength": 1
+    },
+    "status": {
+      "enum": [
+        "open",
+        "decided",
+        "superseded"
+      ]
+    },
+    "question": {
+      "type": "string"
+    },
+    "options": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "decision": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "the person's answer, verbatim"
+    },
+    "rationale": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "supersedes": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/dec_id"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "opened_at": {
+      "$ref": "#/$defs/ts"
+    },
+    "decided_at": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/ts"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "decided_by": {
+      "enum": [
+        "operator",
+        null
+      ]
+    }
+  },
+  "if": {
+    "properties": {
+      "status": {
+        "const": "decided"
+      }
+    }
+  },
+  "then": {
+    "required": [
+      "decision",
+      "decided_at",
+      "decided_by"
+    ],
+    "properties": {
+      "decision": {
+        "type": "string"
+      },
+      "decided_at": {
+        "$ref": "#/$defs/ts"
+      },
+      "decided_by": {
+        "const": "operator"
+      }
+    }
+  },
+  "$defs": {
+    "dec_id": {
+      "type": "string",
+      "pattern": "^dec-\\d{4}$",
+      "description": "a decision id: dec-NNNN"
+    },
+    "legacy_id": {
+      "type": [
+        "string",
+        "integer",
+        "null"
+      ],
+      "description": "the record's id in the store it was exported from; null for records made here. Kept so a migrated record can be traced back; never shown in public text"
+    },
+    "slug": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9_]*$",
+      "description": "a project slug, for example demo_robot"
+    },
+    "ts": {
+      "type": "string",
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}[T ]\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?(Z|[+-]\\d{2}:\\d{2})?$",
+      "description": "ISO 8601 time, for example 2030-01-01T00:00:00+00:00. New records always use T and carry the UTC offset; times exported from an older store may use a space and lack the offset."
+    }
+  }
+}

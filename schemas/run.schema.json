@@ -1,0 +1,758 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:kiln:run:1",
+  "title": "one training run",
+  "description": "<home>/projects/<slug>/runs/<run-id>/run.json, written `planned` by `kiln train plan` and updated as the run moves. The base model's licence block is copied in at plan time; `continue_from` names a LoRA the run starts from (sd-scripts --network_weights). On an adopted instance `legacy` holds what --emit-legacy wrote for the host runner.",
+  "x-file": "<home>/projects/<slug>/runs/<run-id>/run.json",
+  "x-owner": "tool",
+  "x-kind": "record",
+  "type": "object",
+  "required": [
+    "schema",
+    "id",
+    "project",
+    "snapshot",
+    "family",
+    "status",
+    "base",
+    "continue_from",
+    "trainer",
+    "adapter",
+    "steps",
+    "planned_at",
+    "checkpoints"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "schema": {
+      "const": "kiln/run/1",
+      "description": "the format and its version; always the first key"
+    },
+    "id": {
+      "$ref": "#/$defs/run_id"
+    },
+    "legacy_id": {
+      "$ref": "#/$defs/legacy_id"
+    },
+    "project": {
+      "$ref": "#/$defs/slug"
+    },
+    "label": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "snapshot": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/snapshot_id"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "family": {
+      "$ref": "#/$defs/family_id"
+    },
+    "status": {
+      "enum": [
+        "planned",
+        "running",
+        "ok",
+        "failed",
+        "oom",
+        "aborted"
+      ]
+    },
+    "base": {
+      "type": "object",
+      "required": [
+        "label",
+        "licence"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "resource": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/sha16"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "sha256": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/sha256"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "label": {
+          "type": "string"
+        },
+        "file_name": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "revision": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "from_run": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/run_id"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "licence": {
+          "$ref": "#/$defs/licence"
+        }
+      }
+    },
+    "continue_from": {
+      "anyOf": [
+        {
+          "type": "object",
+          "required": [
+            "sha256"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "resource": {
+              "anyOf": [
+                {
+                  "$ref": "#/$defs/sha16"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "path": {
+              "anyOf": [
+                {
+                  "$ref": "#/$defs/relpath"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "sha256": {
+              "anyOf": [
+                {
+                  "$ref": "#/$defs/sha256"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "from_run": {
+              "anyOf": [
+                {
+                  "$ref": "#/$defs/run_id"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "step": {
+              "type": [
+                "integer",
+                "null"
+              ],
+              "minimum": 0
+            }
+          }
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "trainer": {
+      "type": "object",
+      "required": [
+        "name"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "version": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "commit": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      }
+    },
+    "config": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "path": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/relpath"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "sha256": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/sha256"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      }
+    },
+    "adapter": {
+      "type": "object",
+      "required": [
+        "algo"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "algo": {
+          "enum": [
+            "lora",
+            "lokr",
+            "loha",
+            "dora"
+          ]
+        },
+        "target_preset": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "rank": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 1
+        },
+        "alpha": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "minimum": 0
+        }
+      }
+    },
+    "optimizer": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "type": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "lr": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "lr_text": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "weight_decay": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "scheduler": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      }
+    },
+    "precision": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "batch_size": {
+      "type": [
+        "integer",
+        "null"
+      ],
+      "minimum": 1
+    },
+    "grad_accum": {
+      "type": [
+        "integer",
+        "null"
+      ],
+      "minimum": 1
+    },
+    "seed": {
+      "type": [
+        "integer",
+        "null"
+      ],
+      "minimum": 0
+    },
+    "text_dropout": {
+      "type": [
+        "number",
+        "null"
+      ],
+      "minimum": 0,
+      "maximum": 1
+    },
+    "steps": {
+      "type": "object",
+      "required": [
+        "planned"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "planned": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "done": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "save_every": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 1
+        },
+        "validate_every": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 1
+        }
+      }
+    },
+    "estimate": {
+      "anyOf": [
+        {
+          "type": "object",
+          "required": [
+            "wall_clock_minutes",
+            "basis"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "wall_clock_minutes": {
+              "type": "number",
+              "minimum": 0
+            },
+            "basis": {
+              "type": "string"
+            }
+          }
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "hardware": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "vram_profile": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "vram_peak_mb": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "gpu_label": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      }
+    },
+    "planned_at": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/ts"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "description": "set by train plan; null on a run recorded without a plan"
+    },
+    "started_at": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/ts"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "finished_at": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/ts"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "duration_seconds": {
+      "type": [
+        "integer",
+        "null"
+      ],
+      "minimum": 0
+    },
+    "log": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/relpath"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "output_dir": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/relpath"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "eval_suite": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "an evals/suites/<id>.yaml id"
+    },
+    "selected_checkpoint": {
+      "type": [
+        "integer",
+        "null"
+      ],
+      "minimum": 0
+    },
+    "checkpoints": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "step",
+          "eval_status",
+          "selected"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "step": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "file": {
+            "anyOf": [
+              {
+                "$ref": "#/$defs/relpath"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "sha256": {
+            "anyOf": [
+              {
+                "$ref": "#/$defs/sha256"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "bytes": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "minimum": 0
+          },
+          "eval_status": {
+            "enum": [
+              "unevaluated",
+              "evaluating",
+              "evaluated",
+              "rejected"
+            ]
+          },
+          "eval_score": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "selected": {
+            "type": "boolean"
+          },
+          "notes": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        }
+      }
+    },
+    "legacy": {
+      "$ref": "#/$defs/legacy"
+    },
+    "notes": {
+      "type": [
+        "string",
+        "null"
+      ]
+    }
+  },
+  "$defs": {
+    "date": {
+      "type": "string",
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
+      "description": "a date, YYYY-MM-DD"
+    },
+    "family_id": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9_]*$",
+      "description": "a model family id: the stem of families/<id>.yaml"
+    },
+    "legacy": {
+      "type": "object",
+      "description": "columns of the exported store that have no field here yet, kept verbatim by the exporter; tools ignore this block"
+    },
+    "legacy_id": {
+      "type": [
+        "string",
+        "integer",
+        "null"
+      ],
+      "description": "the record's id in the store it was exported from; null for records made here. Kept so a migrated record can be traced back; never shown in public text"
+    },
+    "licence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "status"
+      ],
+      "description": "a model's licence terms as read from its source. Read by `registry audit`, `recipe propose --explain`, `kiln train plan` (copied into run.json) and `kiln release build` (which refuses when status is unknown, derivatives_allowed is false, or relicense_allowed is false while the LoRA's licence differs). null in a field = not known",
+      "properties": {
+        "status": {
+          "enum": [
+            "verified",
+            "unverified",
+            "unknown"
+          ],
+          "description": "verified = a person read the licence text; unverified = taken from site metadata; unknown = nothing known yet"
+        },
+        "name": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "the licence's name as its source gives it"
+        },
+        "spdx": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "SPDX id when one exists, for example Apache-2.0"
+        },
+        "url": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/url"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "commercial_use": {
+          "enum": [
+            "none",
+            "images",
+            "rent",
+            "sell",
+            null
+          ],
+          "description": "Civitai allowCommercialUse mapped: none | images | rent | sell"
+        },
+        "credit_required": {
+          "type": [
+            "boolean",
+            "null"
+          ],
+          "description": "Civitai allowNoCredit inverted"
+        },
+        "derivatives_allowed": {
+          "type": [
+            "boolean",
+            "null"
+          ],
+          "description": "Civitai allowDerivatives"
+        },
+        "relicense_allowed": {
+          "type": [
+            "boolean",
+            "null"
+          ],
+          "description": "Civitai allowDifferentLicense"
+        },
+        "redistributable": {
+          "type": [
+            "boolean",
+            "null"
+          ]
+        },
+        "gated": {
+          "type": [
+            "boolean",
+            "null"
+          ],
+          "description": "true = downloading needs a login or an accepted form"
+        },
+        "source": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "where the terms come from: civitai-api | hf-card | model-card | manual | family-summary"
+        },
+        "checked_at": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ts"
+            },
+            {
+              "$ref": "#/$defs/date"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "note": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      }
+    },
+    "relpath": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^(?![A-Za-z]:)(?!/)(?!.*\\\\)(?!(.*/)?\\.\\.(/|$)).+$",
+      "description": "a path relative to the root its record names: forward slashes, no drive, no leading slash, no `..`"
+    },
+    "run_id": {
+      "type": "string",
+      "pattern": "^run-\\d{8}-[a-z0-9][a-z0-9_-]*$",
+      "description": "a run id: run-YYYYMMDD-<slug>, for example run-20300101-001"
+    },
+    "sha16": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{16}$",
+      "description": "a resource id: the first 16 hex digits of the file's sha256"
+    },
+    "sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$",
+      "description": "lower-case hex sha256 of the file bytes"
+    },
+    "slug": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9_]*$",
+      "description": "a project slug, for example demo_robot"
+    },
+    "snapshot_id": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9_]*/\\d+\\.\\d+\\.\\d+$",
+      "description": "a dataset snapshot id: <slug>/<version>"
+    },
+    "ts": {
+      "type": "string",
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}[T ]\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?(Z|[+-]\\d{2}:\\d{2})?$",
+      "description": "ISO 8601 time, for example 2030-01-01T00:00:00+00:00. New records always use T and carry the UTC offset; times exported from an older store may use a space and lack the offset."
+    },
+    "url": {
+      "type": "string",
+      "pattern": "^https?://",
+      "description": "an http(s) URL"
+    }
+  }
+}

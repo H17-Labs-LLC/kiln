@@ -1,0 +1,271 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:kiln:jobs-file:1",
+  "title": "a declarative batch of generations",
+  "description": "The input of `kiln source run <jobs.json> [--dry-run]`: per image exactly what is varied and why, the references with their roles, and the groups the review reads back. Nothing is inferred from file names.",
+  "x-file": "<home>/projects/<slug>/jobs/<name>.json",
+  "x-owner": "person / assistant",
+  "x-kind": "record",
+  "type": "object",
+  "required": [
+    "schema",
+    "name",
+    "project",
+    "source",
+    "out_dir",
+    "groups",
+    "jobs"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "schema": {
+      "const": "kiln/jobs-file/1",
+      "description": "the format and its version; always the first key"
+    },
+    "name": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9_-]*$"
+    },
+    "project": {
+      "$ref": "#/$defs/slug"
+    },
+    "source": {
+      "enum": [
+        "codex",
+        "comfy",
+        "files",
+        "easel-run"
+      ]
+    },
+    "out_dir": {
+      "$ref": "#/$defs/relpath"
+    },
+    "groups": {
+      "type": "object",
+      "propertyNames": {
+        "pattern": "^[A-Z][A-Z0-9]*$"
+      },
+      "additionalProperties": {
+        "type": "object",
+        "required": [
+          "title",
+          "question"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "title": {
+            "type": "string"
+          },
+          "question": {
+            "type": "string"
+          },
+          "readout": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "anchors": {
+      "type": "object",
+      "propertyNames": {
+        "pattern": "^[a-z][a-z0-9_]*$"
+      },
+      "additionalProperties": {
+        "type": "array",
+        "items": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1
+            },
+            {
+              "type": "object",
+              "required": [
+                "ref"
+              ],
+              "additionalProperties": false,
+              "properties": {
+                "ref": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "role": {
+                  "type": "string",
+                  "pattern": "^[a-z][a-z0-9_]*$"
+                }
+              }
+            }
+          ],
+          "description": "an image id, a path relative to the project, @<role> (the role group's primary), @<role>#2 or @<role>*, or an anchors name"
+        },
+        "minItems": 1
+      }
+    },
+    "jobs": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "group",
+          "prefix",
+          "mode",
+          "intent",
+          "viewpoint",
+          "framing",
+          "tests"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[A-Z][A-Z0-9]*[0-9]+$"
+          },
+          "group": {
+            "type": "string"
+          },
+          "prefix": {
+            "type": "string",
+            "pattern": "^[a-z0-9_-]+$"
+          },
+          "mode": {
+            "enum": [
+              "generate",
+              "edit"
+            ]
+          },
+          "intent": {
+            "type": "string"
+          },
+          "style": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "refs": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "array",
+                "items": {
+                  "anyOf": [
+                    {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    {
+                      "type": "object",
+                      "required": [
+                        "ref"
+                      ],
+                      "additionalProperties": false,
+                      "properties": {
+                        "ref": {
+                          "type": "string",
+                          "minLength": 1
+                        },
+                        "role": {
+                          "type": "string",
+                          "pattern": "^[a-z][a-z0-9_]*$"
+                        }
+                      }
+                    }
+                  ],
+                  "description": "an image id, a path relative to the project, @<role> (the role group's primary), @<role>#2 or @<role>*, or an anchors name"
+                }
+              }
+            ]
+          },
+          "parent": {
+            "anyOf": [
+              {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  {
+                    "type": "object",
+                    "required": [
+                      "ref"
+                    ],
+                    "additionalProperties": false,
+                    "properties": {
+                      "ref": {
+                        "type": "string",
+                        "minLength": 1
+                      },
+                      "role": {
+                        "type": "string",
+                        "pattern": "^[a-z][a-z0-9_]*$"
+                      }
+                    }
+                  }
+                ],
+                "description": "an image id, a path relative to the project, @<role> (the role group's primary), @<role>#2 or @<role>*, or an anchors name"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "viewpoint": {
+            "enum": [
+              "front",
+              "front_three_quarter",
+              "profile",
+              "back",
+              "rear_three_quarter",
+              "unusual"
+            ]
+          },
+          "framing": {
+            "enum": [
+              "close",
+              "medium",
+              "full",
+              "wide"
+            ]
+          },
+          "outfit": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "want": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 4
+          },
+          "tests": {
+            "type": "string"
+          },
+          "scene": {
+            "type": "string"
+          }
+        }
+      },
+      "minItems": 1
+    }
+  },
+  "$defs": {
+    "relpath": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^(?![A-Za-z]:)(?!/)(?!.*\\\\)(?!(.*/)?\\.\\.(/|$)).+$",
+      "description": "a path relative to the root its record names: forward slashes, no drive, no leading slash, no `..`"
+    },
+    "slug": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9_]*$",
+      "description": "a project slug, for example demo_robot"
+    }
+  }
+}

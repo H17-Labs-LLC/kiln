@@ -1,0 +1,230 @@
+# The demo project's intake: types/character-anime/intake.yaml with every answer filled for demo_robot.
+schema: kiln/type-intake/1
+type: character-anime
+version: 1
+about: Answer in plain words. Put 3-6 reference images in one folder first. A weaker assistant that cannot look
+  at images asks you for the checklist in words (question 3 then means "6-10 short rules") and leaves every image
+  role to you.
+policy:
+  subjects: fictional-adults-only
+  refusal: kiln makes LoRAs of fictional adults only. It refuses a subject that is, or reads as, a minor, and a
+    subject that is a real person.
+not_asked:
+- topic: dataset size
+  default: 90 train images and 10 holdout images
+  note: a smaller set trains, but the thresholds in thresholds.yaml assume about this size
+questions:
+- n: 1
+  id: name
+  question: What is the subject's display name?
+  you_give: the display name
+  drafts: 'the project slug: lowercase letters, digits and underscores. The slug is an internal id; keep it out
+    of titles, tags and every public text.'
+  default: null
+  required: true
+  feeds:
+  - project.yaml
+  - spec.template.json subject_heading
+  example: Demo Robot
+  answer: Demo Robot
+- n: 2
+  id: trigger
+  question: Do you want a particular trigger word?
+  you_give: a wish, or nothing
+  drafts: 'three trigger candidates that pass the tokenizer check: at most two CLIP-L pieces, an exact round trip,
+    the last piece word-final, not a whole word of the vocabulary, and no fragment of an existing character or franchise
+    name'
+  default: null
+  required: false
+  feeds:
+  - spec trigger
+  - a decision record
+  note: verify the trigger with the tokenizer before the first caption is written; rewriting a hundred captions
+    later costs far more
+  example: dmrbt
+  answer: dmrbt
+- n: 3
+  id: description
+  question: Describe the subject in 3-6 lines. What is fixed (face, hair or head, colours, special features), and
+    what may vary?
+  you_give: 3-6 plain lines
+  drafts: the spec summary; 6-10 checklist items in checklist.yaml, positive geometry first with one short "not"
+    clause last; where each item cannot be seen (skip_when); review labels and hints; the fixed traits that stay
+    out of every caption (caption_rules.yaml not_in_captions)
+  default: null
+  required: true
+  feeds:
+  - spec summary
+  - checklist.yaml
+  - caption_rules.yaml not_in_captions
+  example: A friendly service robot with a rounded white head, one wide cyan visor instead of eyes and two short
+    antennae on top. Slate-grey body with orange joints. The visor, the antennae and the colours never change; pose,
+    clothing, setting and expression may vary.
+  answer: A friendly service robot with a rounded white head, one wide cyan visor instead of eyes and two short
+    antennae on top. Slate-grey body with orange joints. The visor, the antennae and the colours never change; pose,
+    clothing, setting and expression may vary.
+- n: 4
+  id: references
+  question: Which 3-6 images show the subject? Mark the cleanest one.
+  you_give: 3-6 image files, the cleanest one marked
+  drafts: a role for each image, such as front, three-quarter, profile, back or detail
+  default: null
+  required: true
+  feeds:
+  - images registered as CANDIDATE references
+  note: references are never training images by themselves, and a sheet or grid of panels is reference only
+  example: 'five drawings in one folder: front (the cleanest), three-quarter, profile, back and a visor close-up'
+  answer: 'five drawings in one folder: front (the cleanest), three-quarter, profile, back and a visor close-up'
+- n: 5
+  id: adult
+  question: How old is the subject, in words?
+  you_give: the age in words, for example "an adult woman in her late twenties"
+  drafts: the body checklist item as adult geometry, for example "adult build, about seven heads tall, long legs,
+    shoulders clearly wider than the head"
+  default: null
+  required: true
+  feeds:
+  - spec summary
+  - checklist.yaml body
+  - card.md.tmpl adult_statement
+  note: kiln refuses a blank answer. The subject must read as an adult in every image; words that read young (petite,
+    little, girl, boy, teen) never describe the subject.
+  example: an adult robot, built and proportioned like a grown adult, about seven heads tall
+  answer: an adult robot, built and proportioned like a grown adult, about seven heads tall
+- n: 6
+  id: content
+  question: Which content rating does this LoRA have?
+  you_give: sfw, and whether a later non-sfw version is wanted
+  drafts: null
+  choices:
+  - sfw
+  default: sfw
+  required: false
+  feeds:
+  - project.yaml content_rating
+  note: a later non-sfw version would be its own project with its own decision; this type ships sfw only
+  example: sfw
+  answer: sfw
+- n: 7
+  id: default_outfit
+  question: What does the subject wear by default? Name the torso, arms, legs and feet, and say how much of the
+    back the outfit covers.
+  you_give: plain words for each part
+  drafts: the OUTFIT block (Torso, Arms, Legs, Back, Construction); an outfit tag made of a made-up outfit token
+    plus a booru material tag, and a fallback token; the scene hints for back views and for other outfits; the outfit's
+    cover rating
+  default: null
+  required: true
+  feeds:
+  - spec outfit
+  - caption_rules.yaml default_outfit
+  - spec scene_hints
+  note: when the answer does not mention the back, the draft assumes full back coverage. A plain-word outfit tag
+    is often drawn as an object; a made-up token learns the outfit and the material tag tells the base model what
+    it is
+  example: a sleeveless orange work vest over the grey body, bare grey arms, plain grey legs, orange boots; the
+    vest covers the whole back
+  answer: a sleeveless orange work vest over the grey body, bare grey arms, plain grey legs, orange boots; the vest
+    covers the whole back
+- n: 8
+  id: other_outfits
+  question: Are there outfits or scenes the subject should never be shown in?
+  you_give: anything to avoid
+  drafts: null
+  default: the shared casual, travel, formal and sport outfits; none school-coded
+  required: false
+  feeds:
+  - jobs files
+  example: no capes
+  answer: no capes
+- n: 9
+  id: mouth
+  question: May the mouth show teeth or fangs?
+  you_give: allowed, or never_teeth
+  drafts: 'for never_teeth: a mouth line in the spec, a review check, and negative words that every eval and showcase
+    render adds'
+  choices:
+  - allowed
+  - never_teeth
+  default: allowed
+  required: false
+  feeds:
+  - spec details
+  - checklist.yaml review_only mouth
+  - caption_rules.yaml mouth
+  note: choose never_teeth for a design whose mouth never shows teeth; it keeps a closed or softly open mouth
+  example: never_teeth
+  answer: never_teeth
+- n: 10
+  id: symmetric
+  question: Is the design left-right symmetric, with no side ponytail, scar, one-sided marking or one-sided accessory?
+  you_give: yes or no
+  drafts: null
+  choices:
+  - 'yes'
+  - 'no'
+  default: 'yes'
+  required: false
+  feeds:
+  - dataset.toml FLIP_AUG
+  note: yes turns on random left-right flips at train time; any one-sided feature would be mirrored, so answer no
+    for an asymmetric design
+  example: 'yes'
+  answer: 'yes'
+- n: 11
+  id: pronoun
+  question: Which pronoun do captions, cards and review texts use for the subject?
+  you_give: she, he, they or it
+  drafts: null
+  choices:
+  - she
+  - he
+  - they
+  - it
+  default: they
+  required: false
+  feeds:
+  - spec caption pronoun
+  - card.md.tmpl
+  example: it
+  answer: it
+- n: 12
+  id: families
+  question: Which base model families should the LoRA be trained for?
+  you_give: family ids from families/
+  drafts: null
+  default:
+  - illustrious
+  - pony
+  required: false
+  feeds:
+  - kiln train plan --family
+  note: kiln trains only families whose families/<id>.yaml says training.supported true
+  example: &id001
+  - illustrious
+  answer: *id001
+- n: 13
+  id: style
+  question: In which drawing style is the subject drawn?
+  you_give: a few words
+  drafts: the style tag that ends every caption
+  default: anime illustration
+  required: false
+  feeds:
+  - spec caption style_tag
+  - caption_rules.yaml style_tag
+  example: clean anime illustration with flat colours
+  answer: clean anime illustration with flat colours
+- n: 14
+  id: public_texts
+  question: Any wishes for the public texts of the model page?
+  you_give: optional notes
+  drafts: a title whose noun is clearly adult (woman, man, adult), a description that states the age in words, and
+    tags without franchise names
+  default: null
+  required: false
+  feeds:
+  - card.md.tmpl title
+  - card.md.tmpl description
+  example: 'title: Demo Robot; tags: robot, anime, character'
+  answer: 'title: Demo Robot; tags: robot, anime, character'

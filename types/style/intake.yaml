@@ -1,0 +1,210 @@
+# Intake for a style LoRA: the same 14 questions as the character types, with the ones about a character's
+# identity switched off (`applies: false`) and defaults for a rendering style.
+#
+# `kiln project new <slug> --type style` copies this file into the project. The person fills every `answer`
+# that applies; an assistant may draft what `drafts` names, for the person's approval, and never fills an
+# `answer` itself. `default` is used while `answer` stays null; a `required: true` question blocks the scaffold
+# until it is answered. `example` answers each question for a synthetic demo style (demo_style, trigger dmstl):
+# it shows the shape of an answer and is never used as one.
+# Checked by `kiln types check style` against schemas/type-intake.schema.json.
+
+schema: kiln/type-intake/1
+type: style
+version: 1
+about: >-
+  A style LoRA learns a look (line, shading, palette, finish), not a character. Collect 8-20 images in the
+  style, of varied subjects and scenes, in one folder first. Where the images show people, every one of them
+  is an adult.
+policy:
+  subjects: fictional-adults-only
+  refusal: >-
+    kiln makes LoRAs that depict fictional adults only. A style LoRA's training images and examples show no
+    one who is, or reads as, a minor, and no real person.
+not_asked:
+  - topic: dataset size
+    default: 60 train images and 8 holdout images
+    note: a prior for styles, not a measurement; variety of subjects matters more than count
+questions:
+  - n: 1
+    id: name
+    question: What is the style's display name?
+    you_give: the display name
+    drafts: >-
+      the project slug: lowercase letters, digits and underscores. The slug is an internal id; keep it out
+      of titles, tags and every public text.
+    default: null
+    required: true
+    feeds: [project.yaml, spec.template.json subject_heading]
+    example: Demo Poster Style
+    answer: null
+
+  - n: 2
+    id: trigger
+    question: Do you want a particular trigger word?
+    you_give: a wish, or nothing
+    drafts: >-
+      three trigger candidates that pass the tokenizer check: at most two CLIP-L pieces, an exact round
+      trip, the last piece word-final, not a whole word of the vocabulary, and no fragment of an artist's
+      or a studio's name
+    default: null
+    required: false
+    feeds: [spec trigger, a decision record]
+    note: the trigger stands for the whole look; verify it with the tokenizer before the first caption is written
+    example: dmstl
+    answer: null
+
+  - n: 3
+    id: description
+    question: >-
+      Describe the style in 3-6 lines: line, shading, palette and finish. What stays the same in every image,
+      and what varies?
+    you_give: 3-6 plain lines
+    drafts: >-
+      the spec summary; 3-8 style checklist items in checklist.yaml (line, shading, palette, finish and the
+      like), positive first with one short "not" clause last; review labels and hints
+    default: null
+    required: true
+    feeds: [spec summary, checklist.yaml]
+    example: >-
+      Flat-colour travel-poster look: thick even dark outlines, two-tone cel shading with hard edges, a muted
+      palette of teal, cream and rust, and a faint paper grain over everything. Subjects, scenes and
+      compositions vary.
+    answer: null
+
+  - n: 4
+    id: references
+    question: Which images show the style? Collect 8-20, of varied subjects and scenes.
+    you_give: 8-20 image files in the style
+    drafts: a short content note for each image, such as landscape, interior, portrait or object
+    default: null
+    required: true
+    feeds: [images registered as CANDIDATE references]
+    note: >-
+      use images you made or may use; a style is learnt from variety, so one subject repeated many times
+      teaches that subject instead of the look
+    example: >-
+      twelve posters in one folder: four landscapes, three street scenes, two interiors, two objects and one
+      portrait of an adult
+    answer: null
+
+  - n: 5
+    id: adult
+    question: Do any of the images show people? If so, confirm that every person shown is an adult.
+    you_give: '"no people", or "people shown, all adults"'
+    drafts: a review-only check that every person in an image reads as an adult
+    default: null
+    required: true
+    feeds: [checklist.yaml review_only adults_only, card.md.tmpl adult_statement]
+    note: kiln refuses a blank answer; any image with a person who reads young is removed from the set
+    example: people shown, all adults
+    answer: null
+
+  - n: 6
+    id: content
+    question: Which content rating does this LoRA have?
+    you_give: sfw, and whether a later non-sfw version is wanted
+    drafts: null
+    choices: [sfw]
+    default: sfw
+    required: false
+    feeds: [project.yaml content_rating]
+    note: a later non-sfw version would be its own project with its own decision; this type ships sfw only
+    example: sfw
+    answer: null
+
+  - n: 7
+    id: default_outfit
+    question: A default outfit does not apply to a style.
+    you_give: nothing
+    drafts: null
+    default: null
+    required: false
+    applies: false
+    feeds: []
+    note: a style LoRA has no default outfit; clothing in the images is described as content in the captions
+    example: null
+    answer: null
+
+  - n: 8
+    id: avoid
+    question: Are there subjects or scenes the style should never be shown with?
+    you_give: anything to avoid
+    drafts: null
+    default: none beyond the shared rules; nothing school-coded
+    required: false
+    feeds: [eval prompts, showcase prompts]
+    example: no text or lettering in the images
+    answer: null
+
+  - n: 9
+    id: mouth
+    question: A mouth rule does not apply to a style.
+    you_give: nothing
+    drafts: null
+    default: null
+    required: false
+    applies: false
+    feeds: []
+    example: null
+    answer: null
+
+  - n: 10
+    id: symmetric
+    question: May the training images be mirrored left to right?
+    you_give: yes or no
+    drafts: null
+    choices: ["yes", "no"]
+    default: "yes"
+    required: false
+    feeds: [dataset.toml FLIP_AUG]
+    note: answer no when the images hold text, or a composition whose direction is part of the style
+    example: "yes"
+    answer: null
+
+  - n: 11
+    id: pronoun
+    question: A pronoun does not apply to a style.
+    you_give: nothing
+    drafts: null
+    default: null
+    required: false
+    applies: false
+    feeds: []
+    example: null
+    answer: null
+
+  - n: 12
+    id: families
+    question: Which base model families should the LoRA be trained for?
+    you_give: family ids from families/
+    drafts: null
+    default: [sdxl, illustrious]
+    required: false
+    feeds: [kiln train plan --family]
+    note: kiln trains only families whose families/<id>.yaml says training.supported true
+    example: [sdxl]
+    answer: null
+
+  - n: 13
+    id: style
+    question: Which words describe the style for people reading the model page?
+    you_give: a few words
+    drafts: null
+    default: null
+    required: false
+    feeds: [card.md.tmpl description]
+    note: these words never go into captions; in a style LoRA the trigger alone stands for the look
+    example: flat-colour travel poster
+    answer: null
+
+  - n: 14
+    id: public_texts
+    question: Any wishes for the public texts of the model page?
+    you_give: optional notes
+    drafts: >-
+      a title, a description of the look, and tags without any artist's, studio's or franchise's name
+    default: null
+    required: false
+    feeds: [card.md.tmpl title, card.md.tmpl description]
+    example: "title: Demo Poster Style; tags: style, poster, flat colour"
+    answer: null

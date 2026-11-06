@@ -1,0 +1,27 @@
+{
+  "schema": "kiln/score-event/1",
+  "at": "2030-01-03T14:00:00+00:00",
+  "v": 1,
+  "source": "operator",
+  "by": "kiln review serve",
+  "run": "run-20300102-001",
+  "column": "s800",
+  "prompt": "E01",
+  "seed": 1001,
+  "suite": "core",
+  "file": "evals/renders/run-20300102-001/s800-E01-1001.png",
+  "checks": {
+    "face": "pass",
+    "head": "pass",
+    "colours": "pass",
+    "body": "pass",
+    "feature": "pass",
+    "hands": "pass"
+  },
+  "verdict": "good",
+  "prompt_fit": "yes",
+  "tags": [],
+  "note": null,
+  "scores": null,
+  "legacy_id": null
+}

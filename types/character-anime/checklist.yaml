@@ -1,0 +1,68 @@
+# Checklist skeleton for a character-anime LoRA: the hard rules every training image is judged by.
+#
+# Each item is stated in every generation prompt AND judged pass or fail per image in review. Fill the items
+# from intake question 3 (an assistant drafts them, the person approves); `example` shows each item filled in
+# for the synthetic demo subject (demo_robot). The `body` item is required and always describes adult
+# geometry. Checked by `kiln types check character-anime` against schemas/type-checklist.schema.json.
+
+schema: kiln/type-checklist/1
+type: character-anime
+kind: identity
+guidance:
+  - Keep 6-10 items, each one checkable by eye on a single image.
+  - State positive geometry first and at most one short "not" clause last; repeating a forbidden feature primes it.
+  - skip_when names the viewpoints and framings where the item cannot be seen; there it is left out of the prompt and is n/a in review.
+  - Use the person's own words once they exist.
+  - Fixed traits named here stay out of every caption (caption_rules.yaml not_in_captions), so the trigger alone learns them.
+  - Change the text only with a new spec version and a decision record; images made under different text are never compared blind.
+vocabulary:
+  viewpoints: [front, front_three_quarter, profile, back, rear_three_quarter, unusual]
+  framings: [close, medium, full, wide]
+items:
+  - key: face
+    heading: "FACE: <SHORT RULE>"
+    text: What the face is, as geometry and proportion. One short "not" clause last.
+    skip_when: {viewpoint: [back]}
+    review: {label: Face, hint: "the face matches the references from this angle"}
+    example: "VISOR: one wide cyan visor across the whole face, rounded at both ends; not two separate eyes."
+  - key: head
+    heading: "HEAD: <SHORT RULE>"
+    text: The head or hair shape, and anything attached to it, as shapes and positions.
+    review: {label: Head, hint: "shape, count and position of what sits on the head"}
+    example: "HEAD: a rounded white dome with two short straight antennae on top, one on each side."
+  - key: colours
+    heading: "COLOURS: <SHORT RULE>"
+    text: The fixed colours and where each one sits.
+    review: {label: Colours, hint: "every fixed colour in its place, no extra colour on the subject"}
+    example: "COLOURS: white head, slate-grey body, orange at every joint."
+  - key: body
+    heading: "BODY: ADULT <SHORT RULE>"
+    text: >-
+      The build as an adult: height in heads and the relations between widths, for example shoulders
+      against head and hips. Never words that read young.
+    skip_when: {framing: [close]}
+    review: {label: Body, hint: "reads as an adult; proportions as stated"}
+    example: "BODY: adult build, about seven heads tall, shoulders twice the width of the head, long legs."
+  - key: feature
+    heading: "FEATURE: <SHORT RULE>"
+    text: The one special feature that makes the subject recognisable, where it sits and how big it is.
+    review: {label: Feature, hint: "present, right size, right place"}
+    example: "CHEST: a round amber light in the middle of the chest, about the size of a palm."
+  - key: hands
+    heading: "HANDS: <SHORT RULE>"
+    text: Hands or other limbs that differ from a plain human, as counts and shapes.
+    skip_when: {framing: [close]}
+    review: {label: Hands, hint: "count and shape as stated"}
+    example: "HANDS: three thick grey fingers and a thumb on each hand."
+review_only:
+  - key: outfit
+    label: Outfit
+    hint: matches the OUTFIT block of the spec, back coverage included
+    skip_when: {framing: [close]}
+  - key: render
+    label: Clean render
+    hint: no artefacts, extra limbs, text or sheet layout
+  - key: mouth
+    label: Mouth
+    hint: no teeth or fangs visible
+    when: mouth = never_teeth

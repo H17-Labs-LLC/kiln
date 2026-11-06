@@ -1,0 +1,79 @@
+# kiln.example.toml: copy to <home>/kiln.toml (for example ~/kiln-home/kiln.toml) and edit the copy.
+# Found in this order: --workspace, $KILN_HOME, upward from the current folder, ~/.config/kiln/.
+# Any key can be overridden with KILN_<SECTION>__<KEY>. `kiln config show` prints every value with its source;
+# `kiln config set <section.key> <value>` edits your copy safely.
+# ${VAR} values are expanded at load time; an unset variable is a FAIL in `kiln doctor` and exit 2 elsewhere.
+# Absolute paths belong only in your instance copy, never in a repository file.
+schema = "kiln/config/1"
+
+[instance]
+name = "home"
+adopted = false                 # true = an existing workspace that kiln plans for through its own runner
+
+[paths]                         # relative paths are relative to the instance root
+root = "."
+models_root = "${MODELS_ROOT}"  # <models_root>: the folder that holds checkpoints/, loras/, ...
+projects = "projects"
+journal = "journal"
+runtime = "runtime"
+# images_root = "<images_root>" # adopted projects only: the existing dataset image folder, read-only until cutover
+
+[comfyui]
+url = "http://127.0.0.1:8188"   # evaluation renders; ComfyUI's upstream default, the server you use may listen elsewhere
+dir = ""
+python = ""
+min_version = "0.43.0"
+manage_lifecycle = false
+
+[limits]
+host_ram_floor_gb = 2.0
+disk_floor_gb = 20              # free disk a write must leave; set it to what your models, datasets and runs need
+max_concurrent_gpu_jobs = 1     # the RAM a job needs comes from families/<family>.yaml host_ram_gb
+
+[scheduler]
+kind = "none"                   # none = wait for free RAM and disk locally; a command adapter is configured per machine
+fail_open = false
+
+[jobs]
+allowed = []                    # the GPU verbs a scheduler may start for this instance; empty = none
+
+[review]
+bind = "127.0.0.1"
+port = 8741
+
+[policy]
+reviewer = "human-only"
+prompt_authoring = "sfw-only"
+unknown_rating_is = "nsfw"
+second_source_name = "assistant"
+render = "native"                    # native | legacy-runner
+subjects = "fictional-adults-only"   # specs, captions and prompts: fictional adults only, never a real person
+
+[privacy]
+wordlist = "${PRIVATE_WORDS_FILE}"   # your private word list, kept outside every repository
+headless = true
+
+[train]
+venv_dir = "runtime/venv-train"      # a directory; the interpreter inside is derived per OS
+python = ""                          # <train_python>: wins over venv_dir when set
+sd_scripts = "runtime/sd-scripts"
+max_vram_fraction = 0.9
+
+[sources]
+codex_home = ""                      # <codex_home>: where Codex/ChatGPT image jobs write their outputs
+comfy_url = ""                       # <comfy_url>: the ComfyUI the comfy image source renders with
+
+[legacy]
+# Only on an adopted instance. Every value is a fact about the host workspace and stays in your copy:
+# root = "<host_root>"
+# exp = "<exp>"
+# renderer = "<host_renderer>"
+# launcher_template = "<host_launcher_template>"
+# dataset_template = "<host_dataset_template>"
+# generated_dir = "<host_generated_dir>"
+# queue_dir = "<host_queue_dir>"
+# run_registry = "<host_run_registry>"
+
+[env_aliases]
+# Map an environment variable of your own setup to a key, for example:
+# "<OLD_NAME>" = "paths.models_root"

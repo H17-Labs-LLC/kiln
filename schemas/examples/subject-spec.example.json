@@ -1,0 +1,145 @@
+{
+  "schema": "kiln/subject-spec/1",
+  "version": "1.0",
+  "type": "character-anime",
+  "project": "demo_robot",
+  "status": "approved",
+  "approved_at": "2030-01-01T00:30:00+00:00",
+  "subject_heading": "THE CHARACTER",
+  "summary": "Demo Robot is a friendly service robot: a rounded white head with one wide cyan visor instead of eyes and two short antennae, a slate-grey body with orange joints and a round amber light in the chest. An adult robot, built and proportioned like a grown adult, about seven heads tall. Drawn as a clean anime illustration with flat colours.",
+  "adult": "an adult robot, built and proportioned like a grown adult, about seven heads tall",
+  "trigger": "dmrbt",
+  "trigger_check": {
+    "illustrious": {
+      "tokens": 2,
+      "ok": true
+    }
+  },
+  "reference_takes": "the head shape, the visor, the antennae, the colours and the rendering style",
+  "reference_ignores": "pose, clothing, background and lighting",
+  "checklist": [
+    {
+      "key": "face",
+      "heading": "VISOR",
+      "text": "one wide cyan visor across the whole face, rounded at both ends; not two eyes",
+      "skip_when": {
+        "viewpoint": [
+          "back"
+        ]
+      },
+      "review": {
+        "label": "Visor",
+        "hint": "one visor, never two eyes"
+      }
+    },
+    {
+      "key": "head",
+      "heading": "HEAD",
+      "text": "a rounded white dome with two short straight antennae on top, one on each side",
+      "review": {
+        "label": "Head and antennae",
+        "hint": "two antennae, both short and straight"
+      }
+    },
+    {
+      "key": "colours",
+      "heading": "COLOURS",
+      "text": "white head, slate-grey body, orange at every joint",
+      "review": {
+        "label": "Colours",
+        "hint": "white head, slate-grey body, orange at every joint"
+      }
+    },
+    {
+      "key": "body",
+      "heading": "BODY",
+      "text": "adult build, about seven heads tall, shoulders twice the width of the head",
+      "skip_when": {
+        "framing": [
+          "close"
+        ]
+      },
+      "review": {
+        "label": "Adult build",
+        "hint": "reads as a grown adult, never small or childlike"
+      }
+    },
+    {
+      "key": "feature",
+      "heading": "CHEST",
+      "text": "a round amber light in the middle of the chest, about the size of a palm",
+      "skip_when": {
+        "viewpoint": [
+          "back",
+          "rear_three_quarter"
+        ]
+      },
+      "review": {
+        "label": "Chest light",
+        "hint": "a round amber light in the middle of the chest, about the size of a palm"
+      }
+    },
+    {
+      "key": "hands",
+      "heading": "HANDS",
+      "text": "three thick grey fingers and a thumb on each hand",
+      "skip_when": {
+        "framing": [
+          "close"
+        ]
+      },
+      "review": {
+        "label": "Hands",
+        "hint": "count the fingers: three and a thumb"
+      }
+    }
+  ],
+  "review_only": [
+    {
+      "key": "outfit",
+      "label": "Default outfit",
+      "hint": "orange work vest when no other outfit is asked for"
+    },
+    {
+      "key": "render",
+      "label": "Clean render",
+      "hint": "no artefacts, no text, no watermark"
+    }
+  ],
+  "outfit": {
+    "torso": "a sleeveless orange work vest over the grey body",
+    "arms": "bare grey arms",
+    "legs": "plain grey legs",
+    "feet": "orange boots",
+    "back": "the vest covers the whole back",
+    "construction": "heavy canvas with two chest pockets",
+    "rating": "pg"
+  },
+  "details": {
+    "mouth": "no mouth: the visor covers the face"
+  },
+  "caption": {
+    "class_word": "robot",
+    "style_tag": "clean anime illustration",
+    "default_outfit": "orange work vest",
+    "pronoun": "it",
+    "possessive": "its",
+    "negative": [
+      "two eyes",
+      "teeth"
+    ],
+    "not_in_captions": [
+      "visor",
+      "antennae",
+      "amber chest light"
+    ],
+    "view_tags": true,
+    "words": {},
+    "min_words": 8,
+    "max_words": 60
+  },
+  "scene_hints": {
+    "default_outfit": "It wears its sleeveless orange work vest.",
+    "back_view": "The vest covers its whole back."
+  }
+}

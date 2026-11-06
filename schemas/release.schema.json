@@ -1,0 +1,452 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:kiln:release:1",
+  "title": "a release folder's record",
+  "description": "<home>/projects/<slug>/release/<version>/release.json, written by `kiln release build` after its gates: the checkpoint and its base, both licences, the card, the showcase files, and the gate results. Publishing is by hand; this record never holds an account name or a page link.",
+  "x-file": "<home>/projects/<slug>/release/<version>/release.json",
+  "x-owner": "tool",
+  "x-kind": "record",
+  "type": "object",
+  "required": [
+    "schema",
+    "project",
+    "version",
+    "built_at",
+    "run",
+    "snapshot",
+    "family",
+    "checkpoint",
+    "base",
+    "licence",
+    "train_images",
+    "card",
+    "files",
+    "gates",
+    "privacy",
+    "publish"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "schema": {
+      "const": "kiln/release/1",
+      "description": "the format and its version; always the first key"
+    },
+    "project": {
+      "$ref": "#/$defs/slug"
+    },
+    "version": {
+      "type": "string",
+      "pattern": "^v?\\d+\\.\\d+(\\.\\d+)?$"
+    },
+    "built_at": {
+      "$ref": "#/$defs/ts"
+    },
+    "run": {
+      "$ref": "#/$defs/run_id"
+    },
+    "snapshot": {
+      "$ref": "#/$defs/snapshot_id"
+    },
+    "family": {
+      "$ref": "#/$defs/family_id"
+    },
+    "checkpoint": {
+      "type": "object",
+      "required": [
+        "step",
+        "file",
+        "sha256"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "step": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "file": {
+          "$ref": "#/$defs/relpath"
+        },
+        "sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "bytes": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0
+        }
+      }
+    },
+    "base": {
+      "type": "object",
+      "required": [
+        "label",
+        "licence"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "resource": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/sha16"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "sha256": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/sha256"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "label": {
+          "type": "string"
+        },
+        "licence": {
+          "$ref": "#/$defs/licence"
+        }
+      }
+    },
+    "licence": {
+      "$ref": "#/$defs/licence"
+    },
+    "trigger": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "title": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string"
+    },
+    "tags": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "train_images": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "counted from the snapshot's train members"
+    },
+    "card": {
+      "$ref": "#/$defs/relpath"
+    },
+    "files": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "role",
+          "file",
+          "sha256",
+          "bytes"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "role": {
+            "enum": [
+              "model",
+              "card",
+              "showcase",
+              "notes"
+            ]
+          },
+          "file": {
+            "$ref": "#/$defs/relpath"
+          },
+          "sha256": {
+            "$ref": "#/$defs/sha256"
+          },
+          "bytes": {
+            "type": "integer",
+            "minimum": 0
+          }
+        }
+      }
+    },
+    "showcase": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "prompt",
+          "family",
+          "seed",
+          "file"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "prompt": {
+            "type": "string"
+          },
+          "family": {
+            "$ref": "#/$defs/family_id"
+          },
+          "seed": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "file": {
+            "$ref": "#/$defs/relpath"
+          }
+        }
+      }
+    },
+    "gates": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "gate",
+          "status"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "gate": {
+            "type": "string"
+          },
+          "status": {
+            "enum": [
+              "pass",
+              "fail",
+              "skip"
+            ]
+          },
+          "detail": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        }
+      },
+      "minItems": 1
+    },
+    "privacy": {
+      "type": "object",
+      "required": [
+        "rebuilt",
+        "scan_hits"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "rebuilt": {
+          "type": "boolean",
+          "description": "true = files rebuilt without embedded metadata"
+        },
+        "scan_hits": {
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    },
+    "publish": {
+      "type": "object",
+      "required": [
+        "status"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "status": {
+          "enum": [
+            "not-published",
+            "published-by-hand"
+          ]
+        },
+        "at": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ts"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "note": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      }
+    }
+  },
+  "$defs": {
+    "date": {
+      "type": "string",
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
+      "description": "a date, YYYY-MM-DD"
+    },
+    "family_id": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9_]*$",
+      "description": "a model family id: the stem of families/<id>.yaml"
+    },
+    "licence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "status"
+      ],
+      "description": "a model's licence terms as read from its source. Read by `registry audit`, `recipe propose --explain`, `kiln train plan` (copied into run.json) and `kiln release build` (which refuses when status is unknown, derivatives_allowed is false, or relicense_allowed is false while the LoRA's licence differs). null in a field = not known",
+      "properties": {
+        "status": {
+          "enum": [
+            "verified",
+            "unverified",
+            "unknown"
+          ],
+          "description": "verified = a person read the licence text; unverified = taken from site metadata; unknown = nothing known yet"
+        },
+        "name": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "the licence's name as its source gives it"
+        },
+        "spdx": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "SPDX id when one exists, for example Apache-2.0"
+        },
+        "url": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/url"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "commercial_use": {
+          "enum": [
+            "none",
+            "images",
+            "rent",
+            "sell",
+            null
+          ],
+          "description": "Civitai allowCommercialUse mapped: none | images | rent | sell"
+        },
+        "credit_required": {
+          "type": [
+            "boolean",
+            "null"
+          ],
+          "description": "Civitai allowNoCredit inverted"
+        },
+        "derivatives_allowed": {
+          "type": [
+            "boolean",
+            "null"
+          ],
+          "description": "Civitai allowDerivatives"
+        },
+        "relicense_allowed": {
+          "type": [
+            "boolean",
+            "null"
+          ],
+          "description": "Civitai allowDifferentLicense"
+        },
+        "redistributable": {
+          "type": [
+            "boolean",
+            "null"
+          ]
+        },
+        "gated": {
+          "type": [
+            "boolean",
+            "null"
+          ],
+          "description": "true = downloading needs a login or an accepted form"
+        },
+        "source": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "where the terms come from: civitai-api | hf-card | model-card | manual | family-summary"
+        },
+        "checked_at": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ts"
+            },
+            {
+              "$ref": "#/$defs/date"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "note": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      }
+    },
+    "relpath": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^(?![A-Za-z]:)(?!/)(?!.*\\\\)(?!(.*/)?\\.\\.(/|$)).+$",
+      "description": "a path relative to the root its record names: forward slashes, no drive, no leading slash, no `..`"
+    },
+    "run_id": {
+      "type": "string",
+      "pattern": "^run-\\d{8}-[a-z0-9][a-z0-9_-]*$",
+      "description": "a run id: run-YYYYMMDD-<slug>, for example run-20300101-001"
+    },
+    "sha16": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{16}$",
+      "description": "a resource id: the first 16 hex digits of the file's sha256"
+    },
+    "sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$",
+      "description": "lower-case hex sha256 of the file bytes"
+    },
+    "slug": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9_]*$",
+      "description": "a project slug, for example demo_robot"
+    },
+    "snapshot_id": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9_]*/\\d+\\.\\d+\\.\\d+$",
+      "description": "a dataset snapshot id: <slug>/<version>"
+    },
+    "ts": {
+      "type": "string",
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}[T ]\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?(Z|[+-]\\d{2}:\\d{2})?$",
+      "description": "ISO 8601 time, for example 2030-01-01T00:00:00+00:00. New records always use T and carry the UTC offset; times exported from an older store may use a space and lack the offset."
+    },
+    "url": {
+      "type": "string",
+      "pattern": "^https?://",
+      "description": "an http(s) URL"
+    }
+  }
+}

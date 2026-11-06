@@ -1,0 +1,15 @@
+{
+  "schema": "kiln/caption-event/1",
+  "at": "2030-01-01T14:00:00+00:00",
+  "v": 1,
+  "source": "kiln:captions propose",
+  "by": "kiln captions propose --store",
+  "image": "img-ef2052a894f8",
+  "text": "dmrbt, robot, front view, close-up, a calm face, clean anime illustration",
+  "word_count": 11,
+  "status": "draft",
+  "basis": "assistant",
+  "sheet": null,
+  "lint": [],
+  "legacy_id": null
+}

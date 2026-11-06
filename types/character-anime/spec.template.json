@@ -1,0 +1,56 @@
+{
+  "schema": "kiln/subject-spec/1",
+  "_comment": [
+    "Subject spec skeleton for a character-anime LoRA. `kiln project new` copies it into the project as",
+    "spec.json; `kiln spec draft` fills it from intake.yaml and checklist.yaml for the person's approval.",
+    "Values in <angle brackets> are placeholders. The checklist and review_only lists are filled from",
+    "checklist.yaml when the person approves it.",
+    "checklist   = the hard rules: stated in every prompt and judged pass/fail per image in review.",
+    "review_only = judged in review, never put in a prompt.",
+    "skip_when   = viewpoints and framings where an item cannot be seen.",
+    "Bump `version` on any text change and record a decision: images made under different text are never",
+    "compared blind."
+  ],
+  "version": "v1-draft",
+  "type": "character-anime",
+  "subject_heading": "THE CHARACTER",
+  "summary": "<One paragraph: what the subject is, the age in words from intake question 5, and the drawing style.>",
+  "trigger": "<the verified trigger from intake question 2>",
+  "reference_takes": "the head shape, the face, the hair or head features, the colours and the rendering style",
+  "reference_ignores": "body proportions, clothing, pose, expression, background and lighting",
+  "checklist": [],
+  "review_only": [],
+  "outfit": {
+    "torso": "<from intake question 7>",
+    "arms": "<from intake question 7>",
+    "legs": "<from intake question 7>",
+    "feet": "<from intake question 7>",
+    "back": "<how much of the back is covered; required>",
+    "construction": "<what the outfit is made of and how it holds together>",
+    "rating": "<pg or pg13: the cover rating of the default outfit>"
+  },
+  "details": {
+    "mouth": "<from intake question 9: allowed, or a closed or softly open mouth that never shows teeth>"
+  },
+  "caption": {
+    "class_word": "<an adult class word, for example a woman, a man, an adult>",
+    "style_tag": "anime illustration",
+    "default_outfit": "<outfit token>, <booru material tag>",
+    "pronoun": "they",
+    "possessive": "their",
+    "negative": [],
+    "not_in_captions": [],
+    "view_tags": true,
+    "words": {},
+    "min_words": 35,
+    "max_words": 75
+  },
+  "scene_hints": {
+    "default_outfit": "<one sentence that dresses the subject in the default outfit>",
+    "back_view": "<one sentence on the outfit's back for back and rear views>",
+    "other_outfit": "<one sentence that dresses the subject in another outfit, covering as much>",
+    "mouth": "<one sentence that keeps the mouth rule>",
+    "adult_line": "<one sentence that keeps the subject reading as an adult>",
+    "modest": "<one sentence used for a retry after a moderation block: fuller coverage, calmer pose>"
+  }
+}

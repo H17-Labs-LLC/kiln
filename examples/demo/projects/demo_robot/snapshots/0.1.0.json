@@ -1,0 +1,70 @@
+{
+  "schema": "kiln/snapshot/1",
+  "id": "demo_robot/0.1.0",
+  "project": "demo_robot",
+  "version": "0.1.0",
+  "from_version": null,
+  "legacy_id": null,
+  "frozen_at": "2030-01-01T15:00:00+00:00",
+  "caption_level": "medium",
+  "trigger": "dmrbt",
+  "members_sha256": "e3393c46d5a9622125a5686f18148a93372dca45be1b52229e44eed4a9d5972b",
+  "counts": {
+    "train": 6,
+    "holdout": 1,
+    "excluded": 0
+  },
+  "members": [
+    {
+      "image": "img-010af39c9f5c",
+      "split": "train",
+      "repeat": 1,
+      "sha256": "010af39c9f5c9ad620450421793c27c66197aa335b8b403733b5e86bb4b50d80",
+      "caption": "dmrbt, robot, front view, full body, standing relaxed, plain studio backdrop, orange work vest, clean anime illustration"
+    },
+    {
+      "image": "img-3169ee163fb1",
+      "split": "train",
+      "repeat": 1,
+      "sha256": "3169ee163fb16b43b47daee163614726ca1dad9deb73d038171ead56e6202188",
+      "caption": "dmrbt, robot, back view, full body, looking at a shelf, back turned, orange work vest, clean anime illustration"
+    },
+    {
+      "image": "img-52fbb8c0c8fd",
+      "split": "train",
+      "repeat": 1,
+      "sha256": "52fbb8c0c8fd9011bb8440f5269f184a95eaaf7fa231b26fb04cd0cbcd579401",
+      "caption": "dmrbt, robot, front three quarter view, medium shot, waving, plain studio backdrop, orange work vest, clean anime illustration"
+    },
+    {
+      "image": "img-634749b7893a",
+      "split": "holdout",
+      "repeat": 1,
+      "sha256": "634749b7893ad6f6c7c911b97f7caa449bb8b1b876a09a9f94011a5c1f90bf11",
+      "caption": "dmrbt, robot, front view, medium shot, sitting on a crate, workshop, orange work vest, clean anime illustration"
+    },
+    {
+      "image": "img-b5125d1912fa",
+      "split": "train",
+      "repeat": 1,
+      "sha256": "b5125d1912fa1843f73b71d37267e3267e8bc9128af2e7c93fb917f3ea89275e",
+      "caption": "dmrbt, robot, rear three quarter view, medium shot, carrying a toolbox, plain backdrop, orange work vest, clean anime illustration"
+    },
+    {
+      "image": "img-ef2052a894f8",
+      "split": "train",
+      "repeat": 1,
+      "sha256": "ef2052a894f86c9b416f7cbe518856f1bb9c0b22c422d52f2fe7e044ced7cc93",
+      "caption": "dmrbt, robot, front view, close-up, head and shoulders, calm, clean anime illustration"
+    },
+    {
+      "image": "img-fa40ee72d799",
+      "split": "train",
+      "repeat": 1,
+      "sha256": "fa40ee72d79926f10e8df83b416c28db079f4eeca425a7d0f38cd71ea5afc079",
+      "caption": "dmrbt, robot, profile view, full body, walking, plain backdrop, orange work vest, clean anime illustration"
+    }
+  ],
+  "manifest_sha256": null,
+  "notes": "first version: the six core and secondary views plus one holdout"
+}

@@ -1,0 +1,61 @@
+# Example of kiln/config/1 (synthetic: demo_robot, 2030).
+schema: kiln/config/1
+instance:
+  name: home
+  adopted: true
+paths:
+  root: .
+  models_root: ${MODELS_ROOT}
+  projects: projects
+  journal: journal
+  runtime: runtime
+  images_root: <images_root>
+comfyui:
+  url: http://127.0.0.1:8188
+  dir: ''
+  python: ''
+  min_version: 0.43.0
+  manage_lifecycle: false
+limits:
+  host_ram_floor_gb: 2.0
+  disk_floor_gb: 100
+  max_concurrent_gpu_jobs: 1
+  skip_ram_check: false
+scheduler:
+  kind: none
+  fail_open: false
+jobs:
+  allowed: []
+review:
+  bind: 127.0.0.1
+  port: 8741
+policy:
+  reviewer: human-only
+  prompt_authoring: sfw-only
+  unknown_rating_is: nsfw
+  second_source_name: assistant
+  render: legacy-runner
+  subjects: fictional-adults-only
+privacy:
+  wordlist: ${PRIVATE_WORDS_FILE}
+  headless: true
+train:
+  venv_dir: runtime/venv-train
+  python: <train_python>
+  sd_scripts: <sd_scripts_dir>
+  max_vram_fraction: 0.9
+sources:
+  codex_home: <codex_home>
+  comfy_url: ''
+  easel_home: <easel_home>
+legacy:
+  root: <host_root>
+  exp: <exp>
+  renderer: <host_renderer>
+  launcher_template: <host_launcher_template>
+  dataset_template: <host_dataset_template>
+  generated_dir: <host_generated_dir>
+  queue_dir: <host_queue_dir>
+  run_registry: <host_run_registry>
+env_aliases:
+  OLD_MODELS_DIR: paths.models_root

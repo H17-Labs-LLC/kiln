@@ -1,0 +1,99 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:kiln:coverage:1",
+  "title": "the coverage board",
+  "description": "<home>/projects/<slug>/coverage.yaml: what the dataset needs per dimension and bucket, not a raw image quota. Targets are the person's; `current` is refreshed by `kiln coverage board`.",
+  "x-file": "<home>/projects/<slug>/coverage.yaml",
+  "x-owner": "person (targets) / tool (current)",
+  "x-kind": "record",
+  "type": "object",
+  "required": [
+    "schema",
+    "project",
+    "gaps"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "schema": {
+      "const": "kiln/coverage/1",
+      "description": "the format and its version; always the first key"
+    },
+    "project": {
+      "$ref": "#/$defs/slug"
+    },
+    "gaps": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "dimension",
+          "bucket",
+          "target",
+          "current",
+          "priority",
+          "status"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "dimension": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9_]*$",
+            "description": "framing | viewpoint | expression | outfit | environment | lighting | category, or a project's own"
+          },
+          "bucket": {
+            "type": "string",
+            "pattern": "^[a-z0-9][a-z0-9_-]*$"
+          },
+          "target": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "current": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "priority": {
+            "enum": [
+              "blocker",
+              "high",
+              "normal",
+              "low"
+            ]
+          },
+          "status": {
+            "enum": [
+              "open",
+              "filling",
+              "met",
+              "waived"
+            ]
+          },
+          "note": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "legacy_id": {
+            "$ref": "#/$defs/legacy_id"
+          }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "legacy_id": {
+      "type": [
+        "string",
+        "integer",
+        "null"
+      ],
+      "description": "the record's id in the store it was exported from; null for records made here. Kept so a migrated record can be traced back; never shown in public text"
+    },
+    "slug": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9_]*$",
+      "description": "a project slug, for example demo_robot"
+    }
+  }
+}

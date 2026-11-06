@@ -1,0 +1,234 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:kiln:project:1",
+  "title": "a LoRA project",
+  "description": "<home>/projects/<slug>/project.yaml: what the project is, which type and families, and where its images live. Person-owned: kiln reads it and changes it only through `kiln project` verbs; status and goal live in state.json.",
+  "x-file": "<home>/projects/<slug>/project.yaml",
+  "x-owner": "person",
+  "x-kind": "record",
+  "type": "object",
+  "required": [
+    "schema",
+    "slug",
+    "title",
+    "type",
+    "created_at",
+    "trigger",
+    "content_rating",
+    "families",
+    "spec",
+    "intake",
+    "roots"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "schema": {
+      "const": "kiln/project/1",
+      "description": "the format and its version; always the first key"
+    },
+    "slug": {
+      "$ref": "#/$defs/slug"
+    },
+    "legacy_id": {
+      "$ref": "#/$defs/legacy_id"
+    },
+    "title": {
+      "type": "string",
+      "minLength": 1
+    },
+    "type": {
+      "enum": [
+        "character-anime",
+        "character-human",
+        "style"
+      ]
+    },
+    "created_at": {
+      "$ref": "#/$defs/ts"
+    },
+    "trigger": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "the verified trigger token; null until `spec approve`"
+    },
+    "class_word": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "the plain noun captions use, for example robot or woman"
+    },
+    "content_rating": {
+      "$ref": "#/$defs/rating"
+    },
+    "families": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/family_id"
+      },
+      "minItems": 1
+    },
+    "base": {
+      "anyOf": [
+        {
+          "type": "object",
+          "required": [
+            "family",
+            "label"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "family": {
+              "$ref": "#/$defs/family_id"
+            },
+            "resource": {
+              "anyOf": [
+                {
+                  "$ref": "#/$defs/sha16"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "sha256": {
+              "anyOf": [
+                {
+                  "$ref": "#/$defs/sha256"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "label": {
+              "type": "string"
+            }
+          }
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "spec": {
+      "$ref": "#/$defs/relpath"
+    },
+    "intake": {
+      "$ref": "#/$defs/relpath"
+    },
+    "roots": {
+      "type": "object",
+      "description": "every images.jsonl line names one of these in `root`",
+      "required": [
+        "images",
+        "imports",
+        "legacy_output"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "images": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/rootpath"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "where root: images files live, for example {images_root}; read-only"
+        },
+        "imports": {
+          "$ref": "#/$defs/rootpath",
+          "description": "where kiln copies imported images: projects/<slug>/images"
+        },
+        "legacy_output": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/rootpath"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "a host workspace's render output, for example {output_root}"
+        }
+      }
+    },
+    "adopted": {
+      "type": "boolean",
+      "description": "true = exported from an existing workspace; freeze then defaults to --from the latest snapshot"
+    },
+    "notes": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "legacy": {
+      "$ref": "#/$defs/legacy"
+    }
+  },
+  "$defs": {
+    "family_id": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9_]*$",
+      "description": "a model family id: the stem of families/<id>.yaml"
+    },
+    "legacy": {
+      "type": "object",
+      "description": "columns of the exported store that have no field here yet, kept verbatim by the exporter; tools ignore this block"
+    },
+    "legacy_id": {
+      "type": [
+        "string",
+        "integer",
+        "null"
+      ],
+      "description": "the record's id in the store it was exported from; null for records made here. Kept so a migrated record can be traced back; never shown in public text"
+    },
+    "rating": {
+      "enum": [
+        "sfw",
+        "suggestive",
+        "explicit",
+        "unknown"
+      ],
+      "description": "content rating; unknown is treated as not sfw (policy.unknown_rating_is)"
+    },
+    "relpath": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^(?![A-Za-z]:)(?!/)(?!.*\\\\)(?!(.*/)?\\.\\.(/|$)).+$",
+      "description": "a path relative to the root its record names: forward slashes, no drive, no leading slash, no `..`"
+    },
+    "rootpath": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^(\\{[a-z_]+\\}(/(?!.*\\\\)(?!(.*/)?\\.\\.(/|$)).*)?|(?![A-Za-z]:)(?!/)(?!.*\\\\)(?!(.*/)?\\.\\.(/|$)).+)$",
+      "description": "a folder relative to the instance root, or one that starts with a config token such as {images_root}, {models_root} or {output_root}; never an absolute path"
+    },
+    "sha16": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{16}$",
+      "description": "a resource id: the first 16 hex digits of the file's sha256"
+    },
+    "sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$",
+      "description": "lower-case hex sha256 of the file bytes"
+    },
+    "slug": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9_]*$",
+      "description": "a project slug, for example demo_robot"
+    },
+    "ts": {
+      "type": "string",
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}[T ]\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?(Z|[+-]\\d{2}:\\d{2})?$",
+      "description": "ISO 8601 time, for example 2030-01-01T00:00:00+00:00. New records always use T and carry the UTC offset; times exported from an older store may use a space and lack the offset."
+    }
+  }
+}

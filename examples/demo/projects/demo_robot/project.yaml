@@ -1,0 +1,26 @@
+# The demo project: a synthetic service robot, trigger dmrbt. Person-owned; kiln changes it only through
+# `kiln project` verbs.
+schema: kiln/project/1
+slug: demo_robot
+legacy_id: null
+title: Demo Robot
+type: character-anime
+created_at: '2030-01-01T00:00:00+00:00'
+trigger: dmrbt
+class_word: robot
+content_rating: sfw
+families:
+- illustrious
+base:
+  family: illustrious
+  resource: bbbabeef2c0d57fe
+  sha256: bbbabeef2c0d57fee02bdbe3dde478d4dd7b29cc8aef5f8b2b5af3cb22d671df
+  label: Demo Anime XL
+spec: spec.json
+intake: intake.yaml
+roots:
+  images: '{images_root}'
+  imports: projects/demo_robot/images
+  legacy_output: null
+adopted: false
+notes: A synthetic subject for the tests and the runbook examples.

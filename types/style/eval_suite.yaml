@@ -1,0 +1,68 @@
+# Checkpoint triage suite for a style LoRA: 12 scene prompts, each rendered with the 2 seeds below.
+#
+# The scenes cover subjects a style dataset may not hold, because a style is learnt only when it carries over
+# to new content. The runner puts the trigger first. The `columns` render each prompt three ways: the base model
+# alone (what the base draws without help), the LoRA with its trigger (the style the run teaches) and the LoRA
+# without its trigger (how far the style bleeds into every image). Every person in a prompt is an adult. Keep
+# these words and seeds apart from the training captions, so a checkpoint is judged on prompts it never trained
+# on. Read checkpoints of one run side by side, on one version of this file and its seeds.
+
+schema: kiln/eval-suite/1
+suite_id: core
+name: Checkpoint triage suite
+version: 1.0.0
+seeds: [2683, 7419]
+columns: [base, lora, lora-no-trigger]
+prompt_assembly:
+  template: "{trigger}, {prompt}"
+  trigger_applied_by: runner
+  negative_base: lowres, bad anatomy, signature, watermark, text
+prompts:
+  - id: E01
+    category: landscape
+    text: a mountain lake at dawn, pine trees along the shore, mist over the water, wide view
+    stress_case: the look on a plain landscape
+  - id: E02
+    category: street
+    text: a narrow market street at midday, awnings and crates of fruit, a few adult shoppers, medium view
+    stress_case: many small shapes stay in the style
+  - id: E03
+    category: interior
+    text: a quiet library reading room with tall windows and long wooden tables, afternoon light
+    stress_case: straight lines and perspective in the style
+  - id: E04
+    category: portrait
+    text: head and shoulders portrait of a woman in her forties in a wool coat, plain background, soft light
+    stress_case: a face rendered in the style, reading as an adult
+  - id: E05
+    category: portrait
+    text: full body of a man in his fifties walking a dog in a park, three-quarter view, overcast light
+    stress_case: a full figure and an animal in the style
+  - id: E06
+    category: object
+    text: a still life of a teapot, two cups and a lemon on a tablecloth, close view
+    stress_case: small objects and materials in the style
+  - id: E07
+    category: vehicle
+    text: a red tram crossing a stone bridge over a river, side view, clear sky
+    stress_case: hard-edged machines in the style
+  - id: E08
+    category: night
+    text: a harbour at night with lit windows and their reflections on the water, wide view
+    stress_case: the palette holds in darkness
+  - id: E09
+    category: weather
+    text: a country road in heavy rain with a lone adult cyclist under a cape, medium view
+    stress_case: rain and motion in the style
+  - id: E10
+    category: architecture
+    text: a white seaside villa with blue shutters, seen from the garden, bright noon light
+    stress_case: large flat areas keep the finish
+  - id: E11
+    category: nature
+    text: close view of autumn leaves on a forest floor with a small mushroom, soft side light
+    stress_case: organic detail in the style
+  - id: E12
+    category: group
+    text: three adult friends sharing a picnic on a hillside, medium view, late afternoon light
+    stress_case: several adult figures together, each in the style

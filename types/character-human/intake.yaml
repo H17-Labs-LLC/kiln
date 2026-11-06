@@ -1,0 +1,231 @@
+# Intake for a character-human LoRA: 14 questions, about ten minutes.
+#
+# The same questionnaire as character-anime, with defaults for an invented human drawn or painted
+# realistically. `kiln project new <slug> --type character-human` copies this file into the project. The
+# person fills every `answer`; an assistant may draft what `drafts` names, for the person's approval, and never
+# fills an `answer` itself. `default` is used while `answer` stays null; a `required: true` question blocks the
+# scaffold until it is answered. `example` answers each question for a synthetic invented subject (demo_pilot,
+# trigger dmplt): it shows the shape of an answer and is never used as one.
+# Checked by `kiln types check character-human` against schemas/type-intake.schema.json.
+
+schema: kiln/type-intake/1
+type: character-human
+version: 1
+about: >-
+  This type is for an invented adult human only. Answer in plain words. Put 3-6 reference images of the
+  invented person in one folder first: drawings, paintings or generated images, never a photo of a real
+  person. A weaker assistant that cannot look at images asks you for the checklist in words and leaves every
+  image role to you.
+policy:
+  subjects: fictional-adults-only
+  refusal: >-
+    kiln makes LoRAs of fictional adults only. This type refuses a subject that is a real person, is named
+    after one, or is made to resemble one: yourself, someone you know or a public figure. It refuses a
+    subject that is, or reads as, a minor. A photo of a real person is never a reference or a training image.
+not_asked:
+  - topic: dataset size
+    default: 90 train images and 10 holdout images
+    note: a smaller set trains, but the thresholds in thresholds.yaml assume about this size
+questions:
+  - n: 1
+    id: name
+    question: What is the invented subject's display name?
+    you_give: a made-up display name
+    drafts: >-
+      the project slug: lowercase letters, digits and underscores. The slug is an internal id; keep it out
+      of titles, tags and every public text.
+    default: null
+    required: true
+    feeds: [project.yaml, spec.template.json subject_heading]
+    note: never the name of a real person, and never a name chosen to point at one
+    example: Demo Pilot
+    answer: null
+
+  - n: 2
+    id: trigger
+    question: Do you want a particular trigger word?
+    you_give: a wish, or nothing
+    drafts: >-
+      three trigger candidates that pass the tokenizer check: at most two CLIP-L pieces, an exact round
+      trip, the last piece word-final, not a whole word of the vocabulary, and no fragment of a real
+      person's name or an existing character's name
+    default: null
+    required: false
+    feeds: [spec trigger, a decision record]
+    note: verify the trigger with the tokenizer before the first caption is written; rewriting a hundred captions later costs far more
+    example: dmplt
+    answer: null
+
+  - n: 3
+    id: description
+    question: >-
+      Describe the invented person in 3-6 lines. What is fixed (face shape, hair, eye colour, skin tone,
+      special features), and what may vary?
+    you_give: 3-6 plain lines
+    drafts: >-
+      the spec summary; 6-10 checklist items in checklist.yaml, positive geometry first with one short "not"
+      clause last; where each item cannot be seen (skip_when); review labels and hints; the fixed traits
+      that stay out of every caption (caption_rules.yaml not_in_captions)
+    default: null
+    required: true
+    feeds: [spec summary, checklist.yaml, caption_rules.yaml not_in_captions]
+    example: >-
+      An invented cargo pilot: an oval adult face with defined cheekbones, short copper-red hair swept back,
+      grey-green eyes, light freckled skin and a small silver ring in each earlobe. Face, hair, eyes and the
+      rings never change; clothing, pose, setting and expression may vary.
+    answer: null
+
+  - n: 4
+    id: references
+    question: Which 3-6 images show the invented person? Mark the cleanest one.
+    you_give: 3-6 image files, the cleanest one marked
+    drafts: a role for each image, such as front, three-quarter, profile, back or detail
+    default: null
+    required: true
+    feeds: [images registered as CANDIDATE references]
+    note: >-
+      drawn, painted or generated images of the invented person only; never a photo of a real person.
+      References are never training images by themselves, and a sheet or grid of panels is reference only
+    example: >-
+      five generated portraits in one folder: front (the cleanest), three-quarter, profile, back and an
+      earring close-up
+    answer: null
+
+  - n: 5
+    id: adult
+    question: How old is the invented person, in words?
+    you_give: the age in words, for example "a woman in her mid thirties"
+    drafts: >-
+      the body checklist item as adult geometry, for example "adult build, about seven and a half heads
+      tall, shoulders clearly wider than the head, an adult face"
+    default: null
+    required: true
+    feeds: [spec summary, checklist.yaml body, card.md.tmpl adult_statement]
+    note: >-
+      kiln refuses a blank answer. The subject must read as an adult in every image; words that read young
+      (petite, little, girl, boy, teen) never describe the subject.
+    example: a woman in her mid thirties
+    answer: null
+
+  - n: 6
+    id: content
+    question: Which content rating does this LoRA have?
+    you_give: sfw, and whether a later non-sfw version is wanted
+    drafts: null
+    choices: [sfw]
+    default: sfw
+    required: false
+    feeds: [project.yaml content_rating]
+    note: a later non-sfw version would be its own project with its own decision; this type ships sfw only
+    example: sfw
+    answer: null
+
+  - n: 7
+    id: default_outfit
+    question: >-
+      What does the person wear by default? Name the torso, arms, legs and feet, and say how much of the
+      back the outfit covers.
+    you_give: plain words for each part
+    drafts: >-
+      the OUTFIT block (Torso, Arms, Legs, Back, Construction); an outfit tag made of a made-up outfit token
+      plus a plain material word, and a fallback token; the scene hints for back views and for other
+      outfits; the outfit's cover rating
+    default: null
+    required: true
+    feeds: [spec outfit, caption_rules.yaml default_outfit, spec scene_hints]
+    note: >-
+      when the answer does not mention the back, the draft assumes full back coverage. A plain-word outfit
+      tag is often drawn as an object; a made-up token learns the outfit and the material word tells the base
+      model what it is
+    example: >-
+      a navy pilot jacket with brass buttons over a white shirt, long sleeves, dark trousers, brown lace-up
+      boots; the jacket covers the whole back
+    answer: null
+
+  - n: 8
+    id: other_outfits
+    question: Are there outfits or scenes the person should never be shown in?
+    you_give: anything to avoid
+    drafts: null
+    default: the shared casual, travel, formal and sport outfits; none school-coded
+    required: false
+    feeds: [jobs files]
+    example: no uniforms of real airlines
+    answer: null
+
+  - n: 9
+    id: mouth
+    question: May the mouth show teeth?
+    you_give: allowed, or never_teeth
+    drafts: >-
+      for never_teeth: a mouth line in the spec, a review check, and negative words that every eval and
+      showcase render adds
+    choices: [allowed, never_teeth]
+    default: allowed
+    required: false
+    feeds: [spec details, checklist.yaml review_only mouth, caption_rules.yaml mouth]
+    example: allowed
+    answer: null
+
+  - n: 10
+    id: symmetric
+    question: >-
+      Is the design left-right symmetric, with no side parting, scar, one-sided marking or one-sided
+      accessory?
+    you_give: yes or no
+    drafts: null
+    choices: ["yes", "no"]
+    default: "yes"
+    required: false
+    feeds: [dataset.toml FLIP_AUG]
+    note: yes turns on random left-right flips at train time; any one-sided feature would be mirrored, so answer no for an asymmetric design
+    example: "yes"
+    answer: null
+
+  - n: 11
+    id: pronoun
+    question: Which pronoun do captions, cards and review texts use for the person?
+    you_give: she, he or they
+    drafts: null
+    choices: [she, he, they]
+    default: they
+    required: false
+    feeds: [spec caption pronoun, card.md.tmpl]
+    example: she
+    answer: null
+
+  - n: 12
+    id: families
+    question: Which base model families should the LoRA be trained for?
+    you_give: family ids from families/
+    drafts: null
+    default: [sdxl]
+    required: false
+    feeds: [kiln train plan --family]
+    note: kiln trains only families whose families/<id>.yaml says training.supported true
+    example: [sdxl]
+    answer: null
+
+  - n: 13
+    id: style
+    question: In which style is the person drawn or painted?
+    you_give: a few words
+    drafts: the style tag that ends every caption
+    default: realistic digital painting
+    required: false
+    feeds: [spec caption style_tag, caption_rules.yaml style_tag]
+    example: realistic digital painting, soft daylight
+    answer: null
+
+  - n: 14
+    id: public_texts
+    question: Any wishes for the public texts of the model page?
+    you_give: optional notes
+    drafts: >-
+      a title whose noun is clearly adult (woman, man, adult), a description that states the age in words and
+      that the person is invented, and tags without any real person's name
+    default: null
+    required: false
+    feeds: [card.md.tmpl title, card.md.tmpl description]
+    example: "title: Demo Pilot; tags: character, pilot, realistic"
+    answer: null

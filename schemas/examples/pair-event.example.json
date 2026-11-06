@@ -1,0 +1,14 @@
+{
+  "schema": "kiln/pair-event/1",
+  "v": 1,
+  "source": "operator",
+  "by": "kiln review serve",
+  "at": "2030-01-03T16:00:00+00:00",
+  "kind": "pair",
+  "id": "pair-0a1b2c3d",
+  "a": "run-20300102-001|s800|E01|1001",
+  "b": "run-20300102-001|s400|E01|1001",
+  "outcome": "a",
+  "note_a": "clean visor",
+  "note_b": null
+}

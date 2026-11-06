@@ -1,0 +1,114 @@
+{
+  "schema": "kiln/release/1",
+  "project": "demo_robot",
+  "version": "1.0",
+  "built_at": "2030-01-05T09:00:00+00:00",
+  "run": "run-20300102-001",
+  "snapshot": "demo_robot/0.2.0",
+  "family": "illustrious",
+  "checkpoint": {
+    "step": 800,
+    "file": "runs/run-20300102-001/output/demo_robot-000800.safetensors",
+    "sha256": "cf56db17414bcb553eafe194951eefdb54abe08f14fa6f04fbe044bb3ff51abc",
+    "bytes": 574
+  },
+  "base": {
+    "resource": "bbbabeef2c0d57fe",
+    "sha256": "bbbabeef2c0d57fee02bdbe3dde478d4dd7b29cc8aef5f8b2b5af3cb22d671df",
+    "label": "Demo Anime XL",
+    "licence": {
+      "status": "unverified",
+      "name": "Demo Open Licence",
+      "spdx": null,
+      "url": "https://example.invalid/licences/demo-open",
+      "commercial_use": "images",
+      "credit_required": true,
+      "derivatives_allowed": true,
+      "relicense_allowed": false,
+      "redistributable": true,
+      "gated": false,
+      "source": "civitai-api",
+      "checked_at": "2030-01-01",
+      "note": null
+    }
+  },
+  "licence": {
+    "status": "verified",
+    "name": "Demo LoRA Licence",
+    "spdx": null,
+    "url": null,
+    "commercial_use": "images",
+    "credit_required": true,
+    "derivatives_allowed": true,
+    "relicense_allowed": false,
+    "redistributable": true,
+    "gated": false,
+    "source": "manual",
+    "checked_at": "2030-01-05",
+    "note": "chosen by the person at release time"
+  },
+  "trigger": "dmrbt",
+  "title": "Demo Robot",
+  "description": "A friendly adult service robot with a cyan visor, for Illustrious checkpoints.",
+  "tags": [
+    "robot",
+    "anime",
+    "character"
+  ],
+  "train_images": 10,
+  "card": "release/1.0/README.md",
+  "files": [
+    {
+      "role": "model",
+      "file": "release/1.0/demo_robot-v1.safetensors",
+      "sha256": "cf56db17414bcb553eafe194951eefdb54abe08f14fa6f04fbe044bb3ff51abc",
+      "bytes": 574
+    },
+    {
+      "role": "card",
+      "file": "release/1.0/README.md",
+      "sha256": "23d740160a0807d8e4ede73cfcb9948debcf45bd21473ae46b3e571f94ed0066",
+      "bytes": 900
+    },
+    {
+      "role": "showcase",
+      "file": "release/1.0/showcase/S01-illustrious-2001.png",
+      "sha256": "d6371acd0f118c040a232f890e1df631df8263f8b67b21d898ebbd0fe7f24bf4",
+      "bytes": 1241
+    }
+  ],
+  "showcase": [
+    {
+      "prompt": "S01",
+      "family": "illustrious",
+      "seed": 2001,
+      "file": "release/1.0/showcase/S01-illustrious-2001.png"
+    }
+  ],
+  "gates": [
+    {
+      "gate": "base licence allows derivatives",
+      "status": "pass",
+      "detail": null
+    },
+    {
+      "gate": "LoRA licence differs from the base only where relicensing is allowed",
+      "status": "pass",
+      "detail": "same terms kept"
+    },
+    {
+      "gate": "privacy rebuild and scan",
+      "status": "pass",
+      "detail": "0 hits"
+    }
+  ],
+  "privacy": {
+    "rebuilt": true,
+    "scan_hits": 0
+  },
+  "publish": {
+    "status": "not-published",
+    "at": null,
+    "note": "publishing is by hand"
+  }
+}

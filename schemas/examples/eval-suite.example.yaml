@@ -1,0 +1,62 @@
+# Example of kiln/eval-suite/1 (synthetic: demo_robot, 2030).
+schema: kiln/eval-suite/1
+suite_id: core
+project: demo_robot
+legacy_id: null
+name: Core triage suite
+version: 0.1.0
+seeds:
+- 1001
+- 1002
+prompt_assembly:
+  template: '{trigger}, {class_word}, {prompt}'
+  trigger_applied_by: runner
+  negative_base: lowres, blurry, text, watermark
+inference:
+  sampler: euler_ancestral
+  scheduler: normal
+  steps: 28
+  cfg: 5.5
+  width: 832
+  height: 1216
+  clip_skip: 2
+  negative: lowres, blurry, text, watermark
+  shift: null
+columns:
+- base
+- s400
+- s800
+- no-trigger
+prompts:
+- id: E01
+  category: identity_neutral
+  text: front view, standing relaxed, plain backdrop, even daylight
+  stress_case: baseline recognisability
+  framing: full
+- id: E02
+  category: identity_neutral
+  text: three-quarter view from the left, arms at rest, studio backdrop
+  stress_case: three-quarter head geometry
+  framing: medium
+- id: E03
+  category: facial_geometry
+  text: strict left profile, head and shoulders, plain background
+  stress_case: the visor's profile
+  framing: close
+- id: E04
+  category: back_view
+  text: seen from behind, standing, plain backdrop
+  stress_case: antennae and vest from behind
+  framing: full
+- id: E05
+  category: action
+  text: running through a workshop, motion blur on the floor
+  stress_case: identity under motion
+  framing: full
+- id: E06
+  category: lighting
+  text: standing under a street lamp at night
+  stress_case: colours under coloured light
+  framing: medium
+frozen_at: '2030-01-02T10:00:00+00:00'
+notes: null

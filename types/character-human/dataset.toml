@@ -1,0 +1,59 @@
+# Dataset template for kohya-ss sd-scripts (v0.12.3), LoRA type character-human.
+#
+# kiln renders this file into the run folder: every ${NAME} below is replaced, then kiln reads the [kiln]
+# table and removes it, because sd-scripts accepts only the `general` and `datasets` tables in a dataset
+# config. Network rank, alpha and learning rate are trainer flags, not dataset keys; they live here so one
+# file holds every value a type sets. Never edit a rendered copy.
+#
+# The five variables (`kiln types check` refuses any other ${...}):
+#   ${DATASET_ROOT}  the materialised dataset version under the project (datasets/<version>), forward slashes
+#   ${FLIP_AUG}      true or false, from intake question 10 (symmetric)
+#   ${RANK}          network rank: the family's training.network.dim unless the project overrides it
+#   ${ALPHA}         network alpha: the family's training.network.alpha unless the project overrides it
+#   ${LR}            learning rate: the family's training.optimizer.learning_rate unless the project overrides it
+#
+# Resolution and buckets follow the SDXL-based families, the only ones kiln trains in v0.1.
+
+[kiln.network]
+rank = ${RANK}
+alpha = ${ALPHA}
+learning_rate = ${LR}
+
+[general]
+caption_extension = ".txt"
+# 1: the trigger, first in every caption, is never moved (this matters only when shuffling is on).
+keep_tokens = 1
+# Off: shuffling splits on commas and is made for tag lists; it scrambles natural-language captions. Off also
+# lets the trainer cache the text-encoder outputs, which it refuses while shuffling or caption dropout is on.
+shuffle_caption = false
+caption_dropout_rate = 0.0
+enable_bucket = true
+min_bucket_reso = 640
+max_bucket_reso = 1536
+bucket_reso_steps = 64
+# Random left-right flips give variety without duplicate files; only for a symmetric design, because a
+# one-sided feature would be mirrored.
+flip_aug = ${FLIP_AUG}
+# seed and the data-loader worker settings are trainer flags in sd-scripts v0.12.3; the dataset schema
+# rejects them here.
+
+[[datasets]]
+resolution = [1024, 1024]
+# One image per step fits 8 GB; the effective batch comes from gradient accumulation in the family recipe.
+batch_size = 1
+num_repeats = 1
+
+  [[datasets.subsets]]
+  image_dir = "${DATASET_ROOT}/training"
+  # To oversample a few images, add a second subset with num_repeats = 2 over its own folder; never
+  # duplicate files, which breaks lineage tracking and counts one observation twice.
+
+[[datasets]]
+# Validation only: validation_split = 1.0 sends every holdout image to validation and none to training.
+resolution = [1024, 1024]
+batch_size = 1
+validation_split = 1.0
+validation_seed = 1234
+
+  [[datasets.subsets]]
+  image_dir = "${DATASET_ROOT}/holdout"

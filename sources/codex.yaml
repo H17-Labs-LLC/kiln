@@ -1,0 +1,64 @@
+# How kiln's `codex` image source drives the Codex CLI's built-in image tool (`kiln source run <jobs.json>` with
+# "source": "codex"). Read by src/kiln/sources/codex.py; docs/sources/codex.md says what is verified and what is
+# not. An instance may override any key in <home>/sources/codex.yaml (for example `command` or `model`).
+#
+# These values were measured against one CLI release in late 2026; a newer CLI may differ. Change a value only
+# with the date and the CLI version you checked it against, in the same commit as a note in docs/sources/codex.md.
+
+checked_with: codex-cli 0.157 (2026-10)
+
+# The executable and any fixed leading words, found on PATH. The prompt goes in on stdin.
+command: [codex]
+# The model passed with -m; null leaves the CLI's own default.
+model: null
+# Fixed words after the command. `-C <workdir>`, `--output-schema <file>`, `-m`, one `-i <file>` per reference and
+# `-- -` (read the prompt from stdin) are added by the source. Every flag here keeps the relay from doing more than
+# asked: no user config, no rules, no project doc, no web search, no approval prompts, image generation on.
+exec_args: [exec, --json, --skip-git-repo-check, --ignore-user-config, --ignore-rules, --strict-config,
+            -s, workspace-write, -c, approval_policy=never, -c, features.image_generation=true,
+            -c, web_search=disabled, -c, model_reasoning_effort=low, -c, project_doc_max_bytes=0]
+
+# The image tool takes at most this many referenced images; with more it silently dropped one, so a job with more
+# is refused before anything is spent.
+max_references: 5
+
+# Where the CLI writes, under [sources] codex_home: images per thread in <images_dir>/<thread id>/, session
+# records (the prompt the image model received, the references it was given, the quota) under <sessions_dir>/.
+# The event stream on stdout carries no image event: the folder is the authority, the stream only names the thread.
+images_dir: generated_images
+sessions_dir: sessions
+timeout_s: 900
+# Never passed to the CLI: the image source spends the account's plan allowance, never per-call API billing.
+drop_env: [OPENAI_API_KEY, CODEX_API_KEY]
+
+# Exit codes of one job: quota stops the batch; a blocked or refused job is recorded and the batch goes on.
+exit_codes: {ok: 0, empty: 1, blocked: 1, refused: 1, failed: 1, quota: 3}
+# Output moderation marks a generation it refused with this word in the stream.
+moderation_marker: moderation_blocked
+# Read only when a job produced no image. Specific phrases: a bare "rate_limit" also matches harmless JSON.
+quota_hints: [usage limit, rate limit reached, rate_limit_exceeded, quota exceeded, too many requests,
+              try again in, limit reached, insufficient_quota]
+# The relay's own English refusal wording, read only when a job produced no image. Unverified: written against
+# the wording seen so far; a new wording makes a refusal look like an empty result, which is reported, never retried.
+refusal_hints: ["can't help with", "cannot help with", "can't create", "cannot create", "unable to generate",
+                "not able to generate", "can't generate", "cannot generate", content policy]
+
+# The instructions the CLI's agent receives. Its own skill tells it to rewrite prompts, letter the images and
+# inspect and retry its results; each of those would be a hidden variable, so it is told to relay and stop.
+# {calls}, {references} and {prompt} are filled by the source.
+relay: |
+  You relay one prepared request to the built-in image_gen tool for an automated harness. Follow these rules
+  exactly.
+
+  1. Call the built-in image_gen tool {calls}. Read no skill, file or documentation first and use no script or
+     command-line fallback: nothing else is needed.
+  2. The text between the PROMPT markers is the image_gen prompt. Pass it character for character: no summary,
+     no shortening, no reordering, no additions.
+  3. {references}
+  4. Do not look at, judge, retry or regenerate the result, and make no other tool calls.
+  5. Do not copy, move or write any file; the harness collects the output itself.
+  6. Then stop and answer in the required output schema.
+
+  <<<PROMPT
+  {prompt}
+  PROMPT>>>

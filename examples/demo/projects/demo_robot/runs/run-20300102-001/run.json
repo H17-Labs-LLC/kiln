@@ -1,0 +1,137 @@
+{
+  "schema": "kiln/run/1",
+  "id": "run-20300102-001",
+  "legacy_id": null,
+  "project": "demo_robot",
+  "label": "v1",
+  "snapshot": "demo_robot/0.2.0",
+  "family": "illustrious",
+  "status": "ok",
+  "base": {
+    "resource": "bbbabeef2c0d57fe",
+    "sha256": "bbbabeef2c0d57fee02bdbe3dde478d4dd7b29cc8aef5f8b2b5af3cb22d671df",
+    "label": "Demo Anime XL",
+    "file_name": "demo-anime-xl.safetensors",
+    "revision": "9000000102",
+    "from_run": null,
+    "licence": {
+      "status": "unverified",
+      "name": "Demo Open Licence",
+      "spdx": null,
+      "url": "https://example.invalid/licences/demo-open",
+      "commercial_use": "images",
+      "credit_required": true,
+      "derivatives_allowed": true,
+      "relicense_allowed": false,
+      "redistributable": true,
+      "gated": false,
+      "source": "civitai-api",
+      "checked_at": "2030-01-01",
+      "note": null
+    }
+  },
+  "continue_from": null,
+  "trainer": {
+    "name": "kohya-ss sd-scripts",
+    "version": "v0.12.3",
+    "commit": null
+  },
+  "config": {
+    "path": "runs/run-20300102-001/dataset.toml",
+    "sha256": "1debbcad0e1b2f294b9436df49c765f1712b2ecc6fb4d301cb8a792645ae4fa1"
+  },
+  "adapter": {
+    "algo": "lora",
+    "target_preset": null,
+    "rank": 32,
+    "alpha": 32
+  },
+  "optimizer": {
+    "type": "AdamW8bit",
+    "lr": 0.0001,
+    "lr_text": null,
+    "weight_decay": 0.01,
+    "scheduler": "cosine"
+  },
+  "precision": "bf16",
+  "batch_size": 1,
+  "grad_accum": 2,
+  "seed": 42,
+  "text_dropout": null,
+  "steps": {
+    "planned": 1000,
+    "done": 1000,
+    "save_every": 200,
+    "validate_every": null
+  },
+  "estimate": {
+    "wall_clock_minutes": 110,
+    "basis": "families/illustrious.yaml, inherited measured_8gb: 6.5 s per step plus 2 min load"
+  },
+  "hardware": {
+    "vram_profile": "8gb",
+    "vram_peak_mb": 5100,
+    "gpu_label": "NVIDIA GPU, 8 GB"
+  },
+  "planned_at": "2030-01-02T11:00:00+00:00",
+  "started_at": "2030-01-02T12:00:00+00:00",
+  "finished_at": "2030-01-02T13:50:00+00:00",
+  "duration_seconds": 6600,
+  "log": "runs/run-20300102-001/train.log",
+  "output_dir": "runs/run-20300102-001/output",
+  "eval_suite": "core",
+  "selected_checkpoint": 800,
+  "checkpoints": [
+    {
+      "step": 200,
+      "file": "runs/run-20300102-001/output/demo_robot-000200.safetensors",
+      "sha256": "582358a6599d9c3e8fd4d10d692a3866592446d490c0888512a8d2aa636fc8a7",
+      "bytes": 574,
+      "eval_status": "unevaluated",
+      "eval_score": null,
+      "selected": false,
+      "notes": null
+    },
+    {
+      "step": 400,
+      "file": "runs/run-20300102-001/output/demo_robot-000400.safetensors",
+      "sha256": "632beb93d3ce6f62511b8cb2f1d701b6cbad565f2b0a6c87b0251c8d85af26e3",
+      "bytes": 574,
+      "eval_status": "evaluated",
+      "eval_score": 0.5,
+      "selected": false,
+      "notes": null
+    },
+    {
+      "step": 600,
+      "file": "runs/run-20300102-001/output/demo_robot-000600.safetensors",
+      "sha256": "a424640b56c6351a261cb6596fd6c995dee44260f01985eb40fbb22511c13863",
+      "bytes": 574,
+      "eval_status": "unevaluated",
+      "eval_score": null,
+      "selected": false,
+      "notes": null
+    },
+    {
+      "step": 800,
+      "file": "runs/run-20300102-001/output/demo_robot-000800.safetensors",
+      "sha256": "cf56db17414bcb553eafe194951eefdb54abe08f14fa6f04fbe044bb3ff51abc",
+      "bytes": 574,
+      "eval_status": "evaluated",
+      "eval_score": 0.83,
+      "selected": true,
+      "notes": "picked by the person from the eval grid"
+    },
+    {
+      "step": 1000,
+      "file": "runs/run-20300102-001/output/demo_robot-001000.safetensors",
+      "sha256": "069eb212286e8750f6baba1d8b196c204735d2af2d2d976f45c82e8329c25336",
+      "bytes": 574,
+      "eval_status": "unevaluated",
+      "eval_score": null,
+      "selected": false,
+      "notes": null
+    }
+  ],
+  "notes": null
+}

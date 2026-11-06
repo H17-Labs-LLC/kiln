@@ -1,0 +1,13 @@
+{
+  "schema": "kiln/feedback-event/1",
+  "at": "2030-01-06T09:00:00+00:00",
+  "v": 1,
+  "source": "operator",
+  "kind": "release",
+  "id": null,
+  "version": "1.0",
+  "channel": "the model page's comments, read by hand",
+  "text": "the visor reads as two eyes at low weight",
+  "note": "a coverage gap for 0.3.0",
+  "legacy_id": null
+}

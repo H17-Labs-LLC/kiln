@@ -1,0 +1,90 @@
+# Starting thresholds for a character-human LoRA, grouped by stage.
+#
+# The dataset, probe, caption, training and screen numbers are generic priors for SDXL-based families trained
+# on an 8 GB NVIDIA GPU, written down on the date below; none was measured on a realistic human subject. They
+# are a place to start, not a law: validate each one on your own subject before a gate depends on it, and
+# change a value only with a dated note and a decision record. Never change a value to make a result look
+# better.
+# Checked by `kiln types check character-human` against schemas/type-thresholds.schema.json.
+
+schema: kiln/type-thresholds/1
+type: character-human
+dated: "2026-11-05"
+status: validate on your subject first
+basis: >-
+  generic priors for a character LoRA on SDXL-based families; not yet measured on a realistic human
+  subject, and none on yours
+change_rule: change a value only with a dated note beside it and a decision record in the project
+
+groups:
+  dataset:
+    train_target:
+      value: 90
+      unit: images
+      means: the number of training images to aim for
+    holdout:
+      value: 10
+      unit: images
+      means: images kept out of training and used for validation only
+    references:
+      value: [3, 6]
+      unit: images
+      means: reference images of the invented person at intake
+    min_short_side:
+      value: 768
+      unit: px
+      means: an image whose short side is smaller is not a training image; panels cut from a sheet usually fall below it
+
+  probe:
+    fix_wording_below:
+      value: 0.5
+      means: a checklist item that passes on fewer than half of the probe images needs new prompt wording
+    production_at:
+      value: 0.75
+      means: when every item passes on at least three quarters of the probe images, production batches start
+    all_fail_rule:
+      value: true
+      means: an item that fails on every probe image raises the question "change the spec, or push on?" to the person
+
+  captions:
+    medium_words:
+      value: [35, 75]
+      unit: words
+      means: the length of a trained caption
+    max_token_length:
+      value: 150
+      unit: tokens
+      means: the trainer's caption token limit; the default 75 truncates most natural-language captions
+
+  training:
+    save_every:
+      value: [100, 250]
+      unit: steps
+      means: checkpoint interval; choose the checkpoint from the eval grid, not the last step
+    eval_points:
+      value: 4
+      unit: checkpoints
+      means: checkpoints rendered with the eval suite, spread over the second half of the run
+
+  identity:
+    automatic_score:
+      value: null
+      means: >-
+        no automatic identity score ships for this type; anime identity models such as CCIP are trained on
+        drawn characters. The person's eye is the identity check.
+
+  screens:
+    rating_explicit:
+      value: 0.5
+      means: flag when the rating model's probability for its most explicit class reaches this
+    exposed:
+      value: 0.3
+      means: flag an exposure detection at or above this confidence; a missed case costs more than a short look
+    rating_safe_min:
+      value: 0.5
+      means: flag when the model's probability for a safe rating falls below this
+    young_quantile:
+      value: 0.9
+      means: >-
+        flag when an image's young-looking score is above this quantile of the subject's own accepted
+        training images in the same framing group; relative, never an absolute age cut

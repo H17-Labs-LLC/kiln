@@ -1,0 +1,160 @@
+# Model family `sdxl` (Stable Diffusion XL). Public model-family facts only.
+# Shared keys (every top-level key except `schema`, `inference` and `training`) are identical in
+# the easel and kiln copies of this file; `tools/sync_common.py --check` compares them.
+# `inherits`: a block this file leaves out is read from the parent family (the child's keys win).
+# `basis` says where a number comes from: measured on the reference machine, or a prior.
+# `training`: kiln's training recipe for this family (8 GB reference machine).
+
+schema: kiln/family/1
+id: sdxl
+name: Stable Diffusion XL
+status: tested
+inherits: null
+architecture:
+  kind: unet-sdxl
+  latent_channels: 4
+  text_encoders: [clip-l, clip-g]
+  native_resolution: 1024
+description: '1024 native. Dual text encoders: a LoRA touching te1 only is usually SD1.5.'
+licence_summary:
+  status: unverified
+  name: null
+  text: 'unverified: read the model card'
+  url: https://huggingface.co/stabilityai/stable-diffusion-xl-base-1.0
+# host_ram_gb: eval includes the ComfyUI server (the eval step waits for this much free RAM, then starts it).
+host_ram_gb:
+  train: 5.5
+  eval: 8.5
+  eval_includes_comfyui_server: true
+  basis: free host RAM the training and eval steps waited for on the reference machine (Windows 11, NVIDIA
+    GPU with 8 GB VRAM, 32 GB host RAM); the eval number covers the ComfyUI server and its checkpoint
+    load
+training:
+  supported: true
+  basis: 'measured on the reference machine with the bases of: illustrious, pony, sdxl'
+  trainer:
+    name: kohya-ss sd-scripts
+    version: v0.12.3
+  network:
+    module: networks.lora
+    dim: 32
+    alpha: 32
+    train_unet_only: true
+  optimizer:
+    type: AdamW8bit
+    args: [weight_decay=0.01]
+    learning_rate: 0.0001
+    unet_lr: 0.0001
+    lr_scheduler: cosine
+    lr_warmup_steps: 100
+    max_grad_norm: 1.0
+  resolution:
+    base: [1024, 1024]
+    buckets:
+      enabled: true
+      min: 640
+      max: 1536
+      step: 64
+    batch_size: 1
+    gradient_accumulation_steps: 2
+  steps:
+    default: 1000
+    save_every: 200
+    guidance: About 1000 steps at effective batch 2 for a set of about 58 images; save every 200 steps
+      and choose the checkpoint from the eval grid, not the last step.
+  sd_scripts_args:
+    network_module: networks.lora
+    network_dim: 32
+    network_alpha: 32
+    network_train_unet_only: true
+    learning_rate: 0.0001
+    unet_lr: 0.0001
+    optimizer_type: AdamW8bit
+    optimizer_args: weight_decay=0.01
+    max_grad_norm: 1.0
+    lr_scheduler: cosine
+    lr_warmup_steps: 100
+    min_snr_gamma: 5
+    max_token_length: 150
+    save_every_n_steps: 200
+    save_model_as: safetensors
+    save_precision: fp16
+    save_state: true
+    save_last_n_steps_state: 200
+    mixed_precision: bf16
+    gradient_checkpointing: true
+    cache_latents: true
+    cache_text_encoder_outputs: true
+    sdpa: true
+    no_half_vae: true
+    fp8_base_unet: true
+    gradient_accumulation_steps: 2
+    seed: 42
+    max_data_loader_n_workers: 0
+    sample_every_n_steps: 0
+  flags_8gb:
+  - flag: --mixed_precision bf16
+    reason: bf16 halves activation memory; fp16 can overflow on SDXL.
+  - flag: --gradient_checkpointing
+    reason: 'Required at 8 GB: recomputes activations, about 30% slower, far less memory.'
+  - flag: --optimizer_type AdamW8bit
+    reason: '8-bit AdamW: full-precision optimizer state at rank 32 does not fit.'
+  - flag: --fp8_base_unet
+    reason: 'Holds the frozen UNet in fp8, which is what lets 1024 px fit in 8 GB with headroom (about
+      3.6x faster per step than without). It can soften fine detail: compare the final checkpoint with
+      and without fp8 before accepting it.'
+  - flag: --gradient_accumulation_steps 2
+    reason: Effective batch 2 from batch size 1; 4 doubled the wall clock for little gain.
+  - flag: --network_train_unet_only
+    reason: Training the text encoders as well pushes SDXL past 8 GB.
+  - flag: --cache_latents (in RAM, not `_to_disk`)
+    reason: 'Cache latents in RAM, not on disk: the disk cache wrote latent files into the frozen dataset
+      folder, where a later run on a base with another VAE reused them. Caching about 60 images takes
+      a minute.'
+  - flag: --cache_text_encoder_outputs
+    reason: Moves the text encoders off the GPU after caching; needs caption shuffle and caption dropout
+      off.
+  - flag: --max_token_length 150
+    reason: '150: the default 75 silently truncated most captions of a natural-language caption set (39
+      of 58).'
+  - flag: --min_snr_gamma 5
+    reason: '5: steadier loss across timesteps (sd-scripts train_network_advanced.md).'
+  - flag: --save_precision fp16
+    reason: fp16 checkpoints (about 171 MB at rank 32) instead of fp32 (about 354 MB).
+  - item: low-memory trainer wrapper
+    reason: 'A trainer wrapper that streams the base-model load: stock sd-scripts peaked at about 20 GB
+      of host RAM. It also keeps the step count on --resume (stock restarts at 0). Planned for kiln''s
+      training runtime.'
+  - flag: --sample_every_n_steps 0
+    reason: '0: in-loop sampling competes with training for VRAM; render samples afterwards.'
+  - flag: --sdpa only
+    reason: '--sdpa only: --mem_eff_attn overrides it when both are passed; xformers is not assumed.'
+  avoid:
+  - flag: --max_train_epochs
+    reason: Overrides --max_train_steps in sd-scripts v0.12.3 (a 1000-step plan ran 2900 steps).
+    basis: launcher audit against the sd-scripts code, 2026-11-01
+  - flag: --mem_eff_attn
+    reason: Takes precedence over --sdpa when both are passed.
+    basis: launcher audit against the sd-scripts code, 2026-11-01
+  - flag: --cache_latents_to_disk
+    reason: Writes latent cache files into the dataset folder, which a later run on a base with another
+      VAE reuses.
+    basis: launcher audit against the sd-scripts code, 2026-11-01
+  measured_8gb:
+    date: '2026-11-01'
+    hardware: Windows 11, NVIDIA GPU with 8 GB VRAM, 32 GB host RAM
+    dataset_images: 58
+    bucket_resolution: 1024
+    load_and_cache_minutes: 2
+    seconds_per_step: 6.5
+    images_per_step: 2
+    wall_clock_steps: 1000
+    wall_clock_hours: 1.8
+    peak_vram_gb: 5.0
+    checkpoint_every_steps: 200
+    checkpoint_mb: 171
+    checkpoint_precision: fp16
+  eval_render:
+    prompt_prefix: ''
+    negative_extra: ''
+    clip_skip: 1

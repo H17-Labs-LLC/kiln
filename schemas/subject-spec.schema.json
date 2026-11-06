@@ -1,0 +1,365 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:kiln:subject-spec:1",
+  "title": "what the subject must look like",
+  "description": "<home>/projects/<slug>/spec.json (the type ships its skeleton as types/<type>/spec.template.json): the summary, the hard checklist stated in prompts and judged in review, review-only items, outfit, caption conventions. Its text is frozen by convention: change it deliberately, bump `version`, record a decision. Keys starting with `_` are comments.",
+  "x-file": "<home>/projects/<slug>/spec.json",
+  "x-owner": "person",
+  "x-kind": "record",
+  "type": "object",
+  "required": [
+    "schema",
+    "version",
+    "summary",
+    "checklist"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "schema": {
+      "const": "kiln/subject-spec/1",
+      "description": "the format and its version; always the first key"
+    },
+    "version": {
+      "type": "string",
+      "minLength": 1
+    },
+    "type": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9-]*$",
+      "description": "The LoRA type id: a folder under types/ (shipped: character-anime, character-human, style). `kiln types check` verifies it exists."
+    },
+    "project": {
+      "$ref": "#/$defs/slug"
+    },
+    "status": {
+      "enum": [
+        "draft",
+        "approved"
+      ]
+    },
+    "approved_at": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/ts"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "subject_heading": {
+      "type": "string"
+    },
+    "summary": {
+      "type": "string",
+      "minLength": 1
+    },
+    "adult": {
+      "type": "string",
+      "description": "the age in words, for example 'an adult woman in her late twenties'; a machine says so"
+    },
+    "trigger": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "trigger_check": {
+      "type": "object",
+      "description": "family -> {tokens, ok}: the trigger checked against each family's tokenizer",
+      "additionalProperties": {
+        "type": "object",
+        "required": [
+          "ok"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "tokens": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "ok": {
+            "type": "boolean"
+          }
+        }
+      }
+    },
+    "reference_takes": {
+      "type": "string"
+    },
+    "reference_ignores": {
+      "type": "string"
+    },
+    "checklist": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "key",
+          "heading",
+          "text"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "key": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9_]*$"
+          },
+          "heading": {
+            "type": "string"
+          },
+          "text": {
+            "type": "string",
+            "minLength": 1
+          },
+          "skip_when": {
+            "type": "object",
+            "description": "where the item cannot be seen: left out of the prompt, n/a in review",
+            "additionalProperties": false,
+            "properties": {
+              "viewpoint": {
+                "type": "array",
+                "items": {
+                  "enum": [
+                    "front",
+                    "front_three_quarter",
+                    "profile",
+                    "back",
+                    "rear_three_quarter",
+                    "unusual"
+                  ]
+                }
+              },
+              "framing": {
+                "type": "array",
+                "items": {
+                  "enum": [
+                    "close",
+                    "medium",
+                    "full",
+                    "wide"
+                  ]
+                }
+              },
+              "outfit": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "review": {
+            "type": "object",
+            "required": [
+              "label"
+            ],
+            "additionalProperties": false,
+            "properties": {
+              "label": {
+                "type": "string"
+              },
+              "hint": {
+                "type": "string"
+              }
+            }
+          },
+          "example": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "review_only": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "key",
+          "label"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "key": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9_]*$"
+          },
+          "label": {
+            "type": "string"
+          },
+          "hint": {
+            "type": "string"
+          },
+          "skip_when": {
+            "type": "object",
+            "description": "where the item cannot be seen: left out of the prompt, n/a in review",
+            "additionalProperties": false,
+            "properties": {
+              "viewpoint": {
+                "type": "array",
+                "items": {
+                  "enum": [
+                    "front",
+                    "front_three_quarter",
+                    "profile",
+                    "back",
+                    "rear_three_quarter",
+                    "unusual"
+                  ]
+                }
+              },
+              "framing": {
+                "type": "array",
+                "items": {
+                  "enum": [
+                    "close",
+                    "medium",
+                    "full",
+                    "wide"
+                  ]
+                }
+              },
+              "outfit": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "outfit": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
+        }
+      ]
+    },
+    "details": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
+        }
+      ]
+    },
+    "constraints": {
+      "type": "string"
+    },
+    "anchor_roles": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "role"
+        ],
+        "properties": {
+          "role": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9_]*$"
+          }
+        }
+      }
+    },
+    "intents": {
+      "type": "object"
+    },
+    "caption": {
+      "type": "object",
+      "additionalProperties": false,
+      "patternProperties": {
+        "^_": {}
+      },
+      "properties": {
+        "identity": {
+          "type": "string"
+        },
+        "class_word": {
+          "type": "string"
+        },
+        "style_tag": {
+          "type": "string"
+        },
+        "default_outfit": {
+          "type": "string"
+        },
+        "pronoun": {
+          "type": "string"
+        },
+        "possessive": {
+          "type": "string"
+        },
+        "negative": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          ]
+        },
+        "not_in_captions": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "view_tags": {
+          "type": "boolean"
+        },
+        "words": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
+        "min_words": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "max_words": {
+          "type": "integer",
+          "minimum": 1
+        }
+      }
+    },
+    "scene_hints": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "string"
+      }
+    }
+  },
+  "patternProperties": {
+    "^_": {}
+  },
+  "$defs": {
+    "slug": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9_]*$",
+      "description": "a project slug, for example demo_robot"
+    },
+    "ts": {
+      "type": "string",
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}[T ]\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?(Z|[+-]\\d{2}:\\d{2})?$",
+      "description": "ISO 8601 time, for example 2030-01-01T00:00:00+00:00. New records always use T and carry the UTC offset; times exported from an older store may use a space and lack the offset."
+    }
+  }
+}

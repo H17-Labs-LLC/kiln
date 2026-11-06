@@ -1,0 +1,94 @@
+{
+  "schema": "kiln/jobs-file/1",
+  "name": "batch-01",
+  "project": "demo_robot",
+  "source": "codex",
+  "out_dir": "projects/demo_robot/images/batch-01",
+  "groups": {
+    "A": {
+      "title": "Core views",
+      "question": "Does the visor hold in every view?",
+      "readout": [
+        "visor per view",
+        "antennae count"
+      ]
+    },
+    "B": {
+      "title": "Fixes",
+      "question": "Does an edit fix the bent antenna?",
+      "readout": []
+    }
+  },
+  "anchors": {
+    "core": [
+      "img-010af39c9f5c",
+      "img-52fbb8c0c8fd"
+    ],
+    "outfit_refs": [
+      {
+        "ref": "img-3169ee163fb1",
+        "role": "outfit"
+      },
+      {
+        "ref": "@front",
+        "role": "identity"
+      }
+    ]
+  },
+  "jobs": [
+    {
+      "id": "A1",
+      "group": "A",
+      "prefix": "front_full",
+      "mode": "generate",
+      "intent": "generate_new",
+      "style": "core",
+      "refs": "core",
+      "parent": null,
+      "viewpoint": "front",
+      "framing": "full",
+      "outfit": "default",
+      "want": 2,
+      "tests": "the visor and both antennae, front on",
+      "scene": "standing relaxed, plain studio backdrop"
+    },
+    {
+      "id": "A2",
+      "group": "A",
+      "prefix": "back_full",
+      "mode": "generate",
+      "intent": "generate_new",
+      "style": "core",
+      "refs": "outfit_refs",
+      "parent": null,
+      "viewpoint": "back",
+      "framing": "full",
+      "outfit": "default",
+      "want": 2,
+      "tests": "the vest covers the whole back",
+      "scene": "looking at a shelf, back turned"
+    },
+    {
+      "id": "B1",
+      "group": "B",
+      "prefix": "fix_antenna",
+      "mode": "edit",
+      "intent": "identity_correct",
+      "style": null,
+      "refs": [
+        "img-f4fae49d1cf6",
+        {
+          "ref": "img-010af39c9f5c",
+          "role": "identity"
+        }
+      ],
+      "parent": "img-f4fae49d1cf6",
+      "viewpoint": "front",
+      "framing": "full",
+      "outfit": "default",
+      "want": 1,
+      "tests": "both antennae short and straight after the edit",
+      "scene": "keep the scene"
+    }
+  ]
+}

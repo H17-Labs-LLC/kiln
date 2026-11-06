@@ -1,0 +1,149 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:kiln:showcase:1",
+  "title": "what the showcase renders",
+  "description": "<home>/projects/<slug>/showcase.yaml: the prompts, seeds and selection rules of a release's showcase images. The person picks (pick-event kind showcase); nothing here is a pick.",
+  "x-file": "<home>/projects/<slug>/showcase.yaml",
+  "x-owner": "person",
+  "x-kind": "record",
+  "type": "object",
+  "required": [
+    "schema",
+    "project",
+    "families",
+    "seeds",
+    "prompts",
+    "selection"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "schema": {
+      "const": "kiln/showcase/1",
+      "description": "the format and its version; always the first key"
+    },
+    "project": {
+      "$ref": "#/$defs/slug"
+    },
+    "families": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/family_id"
+      },
+      "minItems": 1
+    },
+    "seeds": {
+      "type": "array",
+      "items": {
+        "type": "integer",
+        "minimum": 0
+      },
+      "minItems": 1
+    },
+    "prompts": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "text",
+          "framing"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^S[0-9]{2,}$"
+          },
+          "text": {
+            "type": "string",
+            "minLength": 1
+          },
+          "framing": {
+            "enum": [
+              "close",
+              "medium",
+              "full",
+              "wide"
+            ]
+          },
+          "cover": {
+            "type": "boolean",
+            "description": "a candidate for the cover image"
+          }
+        }
+      },
+      "minItems": 1
+    },
+    "selection": {
+      "type": "object",
+      "required": [
+        "per_family"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "per_family": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "max_close": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "cover_order": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^S[0-9]{2,}$"
+          }
+        }
+      }
+    },
+    "negative_extra": {
+      "type": "string"
+    },
+    "hires": {
+      "anyOf": [
+        {
+          "type": "object",
+          "required": [
+            "mode"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "mode": {
+              "enum": [
+                "none",
+                "latent",
+                "model"
+              ]
+            },
+            "scale": {
+              "type": "number",
+              "exclusiveMinimum": 0
+            },
+            "denoise": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1
+            }
+          }
+        },
+        {
+          "type": "null"
+        }
+      ]
+    }
+  },
+  "$defs": {
+    "family_id": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9_]*$",
+      "description": "a model family id: the stem of families/<id>.yaml"
+    },
+    "slug": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9_]*$",
+      "description": "a project slug, for example demo_robot"
+    }
+  }
+}

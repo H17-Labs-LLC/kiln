@@ -1,0 +1,45 @@
+<!--
+Model card template, LoRA type character-human.
+Fields in double braces are filled when the release folder is built; the person reads and edits the result
+by hand before any upload. Every field name is lowercase with underscores.
+{{repo_links}} renders one sentence under "How this was made", naming the two tools that made the LoRA and
+where their source lives. It is the only link in the card that points at the tools; nothing in the tools
+points back at a model page.
+-->
+# {{title}}
+
+{{description}}
+
+- **Trigger:** `{{trigger}}`, first in the prompt
+- **Base family:** {{family}}; trained on {{base_model}}
+- **Suggested LoRA weight:** {{weight}}
+
+## The character
+
+{{title}} is an invented person: not a real person, and not modelled on one. {{adult_statement}} {{summary}}
+
+## How to prompt
+
+- Start with the trigger, then the class word: `{{trigger}}, {{class_word}}, ...`.
+- The default outfit has its own tag: `{{outfit_tag}}`. Leave it out and describe any other outfit in plain
+  words.
+- {{mouth_note}}
+- Negative prompt to start from: `{{negative}}`
+- Do not use this LoRA to depict a real person.
+
+## Training
+
+- {{train_images}} training images and {{holdout_images}} held-out images of the invented person, none of
+  them a photo of a real person; captions in natural language with the trigger first.
+- {{steps}} steps on {{family}}, rank {{rank}}, alpha {{alpha}}; the checkpoint was chosen from an eval grid
+  by a person, not by the last step.
+- Every training image was looked at and accepted by a person.
+
+## Licence
+
+This LoRA: {{lora_licence}}. Base model: {{base_licence}}. Check the base model's own terms before any use
+they may restrict.
+
+## How this was made
+
+{{repo_links}}

@@ -1,0 +1,137 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:kiln:pick-event:1",
+  "title": "the person's pick",
+  "description": "One line of <home>/projects/<slug>/review/picks.jsonl: kind checkpoint = the best checkpoint of a run (latest per run wins); kind showcase = the image that goes on the page for one prompt and family (latest per prompt and family wins; seed null = nothing from this prompt). Picks are the operator's only.",
+  "x-file": "<home>/projects/<slug>/review/picks.jsonl",
+  "x-owner": "person",
+  "x-kind": "event-line",
+  "type": "object",
+  "required": [
+    "schema",
+    "at",
+    "v",
+    "source",
+    "kind",
+    "run"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "schema": {
+      "const": "kiln/pick-event/1",
+      "description": "the format and its version; always the first key"
+    },
+    "at": {
+      "$ref": "#/$defs/ts"
+    },
+    "v": {
+      "const": 1,
+      "description": "the line format's version: the number at the end of `schema`, so a reader can branch without parsing the string"
+    },
+    "source": {
+      "const": "operator",
+      "description": "picks come from the person only"
+    },
+    "by": {
+      "$ref": "#/$defs/by"
+    },
+    "kind": {
+      "enum": [
+        "checkpoint",
+        "showcase"
+      ]
+    },
+    "run": {
+      "$ref": "#/$defs/run_id"
+    },
+    "column": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "prompt": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "family": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/family_id"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "seed": {
+      "type": [
+        "integer",
+        "null"
+      ],
+      "minimum": 0
+    },
+    "note": {
+      "type": [
+        "string",
+        "null"
+      ]
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "kind": {
+            "const": "checkpoint"
+          }
+        }
+      },
+      "then": {
+        "required": [
+          "column"
+        ]
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "kind": {
+            "const": "showcase"
+          }
+        }
+      },
+      "then": {
+        "required": [
+          "prompt",
+          "family",
+          "seed"
+        ]
+      }
+    }
+  ],
+  "$defs": {
+    "by": {
+      "type": "string",
+      "minLength": 1,
+      "description": "the command that wrote the line, for example `kiln images label` (optional)"
+    },
+    "family_id": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9_]*$",
+      "description": "a model family id: the stem of families/<id>.yaml"
+    },
+    "run_id": {
+      "type": "string",
+      "pattern": "^run-\\d{8}-[a-z0-9][a-z0-9_-]*$",
+      "description": "a run id: run-YYYYMMDD-<slug>, for example run-20300101-001"
+    },
+    "ts": {
+      "type": "string",
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}[T ]\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?(Z|[+-]\\d{2}:\\d{2})?$",
+      "description": "ISO 8601 time, for example 2030-01-01T00:00:00+00:00. New records always use T and carry the UTC offset; times exported from an older store may use a space and lack the offset."
+    }
+  }
+}

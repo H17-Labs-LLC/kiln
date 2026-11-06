@@ -1,0 +1,51 @@
+{
+  "schema": "kiln/image-event/1",
+  "at": "2030-01-03T10:01:00+00:00",
+  "v": 1,
+  "source": {
+    "kind": "generated",
+    "tool": "easel",
+    "run": "run-20300101-001",
+    "n": 1,
+    "recipe": "rcp-20300101-001",
+    "prompt": "dmrbt, robot, standing in a tidy workshop, soft daylight, full body"
+  },
+  "by": "kiln images import --from-easel-run run-20300101-001 --keep-only",
+  "event": "import",
+  "id": "img-26dab1e01d59",
+  "legacy_id": null,
+  "root": "imports",
+  "file": "run-20300101-001/001.png",
+  "sha256": "26dab1e01d59632132e19555b9d483384cc95f5ddd6df503a6da591cea35759d",
+  "bytes": 1854,
+  "width": 8,
+  "height": 8,
+  "format": "png",
+  "color_mode": "RGB",
+  "tier": "CANDIDATE",
+  "disposition": "ACCEPT_TRAIN",
+  "split": "unassigned",
+  "viewpoint": "front",
+  "framing": "full",
+  "labels": [
+    "check:body",
+    "check:colours",
+    "check:face",
+    "check:feature",
+    "check:head"
+  ],
+  "lineage": {
+    "parent": null,
+    "root": "img-26dab1e01d59",
+    "transform": "none",
+    "grid_cell": null,
+    "synthetic_detail_added": 0
+  },
+  "scores": null,
+  "content_rating": "sfw",
+  "verdict_source": "easel-review:run-20300101-001",
+  "legacy_untriaged": false,
+  "caption_basis": "dmrbt, robot, standing in a tidy workshop, soft daylight, full body",
+  "created_at": "2030-01-03T10:00:00+00:00",
+  "notes": null
+}

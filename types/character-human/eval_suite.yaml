@@ -1,0 +1,81 @@
+# Checkpoint triage suite for a character-human LoRA: 12 scene prompts, each rendered with the 2 seeds below.
+#
+# A prompt names only the scene: pose, camera, framing and light. The runner builds the full prompt, adding
+# the trigger, the class word and, unless the framing is close, the default outfit. The `columns` render each
+# prompt three ways: the base model alone (what the base draws without help), the LoRA with its trigger (the
+# person the run teaches) and the LoRA without its trigger (how far the person bleeds into every image).
+# Keep these words and seeds apart from the training captions, so a checkpoint is judged on prompts it never
+# trained on. Read checkpoints of one run side by side, on one version of this file and its seeds.
+
+schema: kiln/eval-suite/1
+suite_id: core
+name: Checkpoint triage suite
+version: 1.0.0
+seeds: [5261, 9904]
+columns: [base, lora, lora-no-trigger]
+prompt_assembly:
+  template: "{trigger}, {class_word}, {prompt}"
+  trigger_applied_by: runner
+  outfit_applied_by: runner, for every prompt whose framing is not close
+  negative_base: lowres, bad anatomy, extra limbs, extra fingers, deformed hands, signature, watermark, text
+prompts:
+  - id: H01
+    category: identity_neutral
+    framing: medium
+    text: facing the camera at eye level, shoulders square, neutral grey seamless backdrop, large soft window light
+    stress_case: the face reads at once with nothing in the scene to help it
+  - id: H02
+    category: identity_neutral
+    framing: full
+    text: standing in trainers on a concrete floor, the whole figure from head to shoes, white studio sweep, even light
+    stress_case: adult proportions from head to feet
+  - id: H03
+    category: angle
+    framing: medium
+    text: body turned three-quarters to the left, face toward the lens, dark green backdrop, one soft key light from the right
+    stress_case: the face shape and jaw line at three-quarter
+  - id: H04
+    category: profile
+    framing: close
+    text: true left profile, head and shoulders, light grey wall, calm face
+    stress_case: the line of the nose, lips and chin
+  - id: H05
+    category: profile
+    framing: close
+    text: true right profile, head and shoulders, beige wall, faint hair light from behind
+    stress_case: an asymmetry stays on its own side
+  - id: H06
+    category: expression
+    framing: close
+    text: close-up, frowning in concentration, eyes narrowed, plain backdrop, cool light
+    stress_case: the face keeps its geometry under tension
+  - id: H07
+    category: expression
+    framing: close
+    text: close-up, open laugh with the head tipped back a little, a sunny street out of focus behind
+    stress_case: a big laugh keeps the mouth rule and the face shape
+  - id: H08
+    category: expression
+    framing: close
+    text: close-up, a quiet worried look, eyes lowered, soft grey morning light
+    stress_case: the eyes keep their shape and colour
+  - id: H09
+    category: back_view
+    framing: full
+    text: seen from behind climbing the wide steps of a museum, late afternoon, long shadows
+    stress_case: the hair from behind and the back of the outfit
+  - id: H10
+    category: motion
+    framing: full
+    text: jogging across a footbridge in a park, mid-stride, autumn trees, cold clear morning
+    stress_case: identity in motion; hands keep five fingers
+  - id: H11
+    category: hands
+    framing: medium
+    text: seated at a cafe table holding a cup in both hands, the street behind out of focus, daylight
+    stress_case: hands around an object
+  - id: H12
+    category: lighting
+    framing: medium
+    text: standing by a bus shelter at night, lit by orange street lamps and a cold blue advertising panel
+    stress_case: skin, hair and eye colours under mixed coloured light

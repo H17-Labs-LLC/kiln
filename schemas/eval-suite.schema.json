@@ -1,0 +1,207 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:kiln:eval-suite:1",
+  "title": "a fixed evaluation suite",
+  "description": "A suite of prompts and fixed seeds that every checkpoint of a run is rendered with. Shipped per LoRA type as types/<type>/eval_suite.yaml and copied into a project as evals/suites/<suite_id>.yaml; frozen once results exist (a change is a new version).",
+  "x-file": "types/<type>/eval_suite.yaml and <home>/projects/<slug>/evals/suites/<suite_id>.yaml",
+  "x-owner": "person",
+  "x-kind": "record",
+  "type": "object",
+  "required": [
+    "schema",
+    "suite_id",
+    "name",
+    "version",
+    "prompts"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "schema": {
+      "const": "kiln/eval-suite/1",
+      "description": "the format and its version; always the first key"
+    },
+    "suite_id": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9_.-]*$",
+      "description": "the file stem: lower case, digits, _ . -; the suite's own name within its project, without the project slug"
+    },
+    "project": {
+      "$ref": "#/$defs/slug"
+    },
+    "legacy_id": {
+      "$ref": "#/$defs/legacy_id"
+    },
+    "name": {
+      "type": "string"
+    },
+    "version": {
+      "$ref": "#/$defs/version"
+    },
+    "seeds": {
+      "type": "array",
+      "items": {
+        "type": "integer",
+        "minimum": 0
+      },
+      "minItems": 1
+    },
+    "seeds_per_prompt": {
+      "type": "integer",
+      "minimum": 1,
+      "description": "how many seeds each prompt is rendered with, for a suite that fixes the count but not the seeds themselves"
+    },
+    "prompt_assembly": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "string"
+      },
+      "description": "how the runner builds each prompt: template, who applies the trigger and the outfit, the negative"
+    },
+    "inference": {
+      "type": "object",
+      "description": "fixed render settings, flat or one block per family group; the family's defaults when absent",
+      "additionalProperties": true,
+      "properties": {
+        "sampler": {
+          "type": "string"
+        },
+        "scheduler": {
+          "type": "string"
+        },
+        "steps": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "cfg": {
+          "type": "number",
+          "minimum": 0
+        },
+        "width": {
+          "type": "integer",
+          "minimum": 64
+        },
+        "height": {
+          "type": "integer",
+          "minimum": 64
+        },
+        "clip_skip": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 1
+        },
+        "negative": {
+          "type": "string"
+        },
+        "shift": {
+          "type": [
+            "number",
+            "null"
+          ]
+        }
+      }
+    },
+    "columns": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "what is rendered per prompt and seed: checkpoint steps plus controls such as base or no-trigger"
+    },
+    "prompts": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "category",
+          "text"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[A-Z][0-9]{2,}$"
+          },
+          "category": {
+            "type": "string"
+          },
+          "text": {
+            "type": "string",
+            "minLength": 1
+          },
+          "stress_case": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "framing": {
+            "enum": [
+              "close",
+              "medium",
+              "full",
+              "wide",
+              null
+            ]
+          }
+        }
+      },
+      "minItems": 1
+    },
+    "frozen_at": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/ts"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "notes": {
+      "type": [
+        "string",
+        "null"
+      ]
+    }
+  },
+  "anyOf": [
+    {
+      "required": [
+        "seeds"
+      ]
+    },
+    {
+      "required": [
+        "seeds_per_prompt"
+      ]
+    }
+  ],
+  "$defs": {
+    "legacy_id": {
+      "type": [
+        "string",
+        "integer",
+        "null"
+      ],
+      "description": "the record's id in the store it was exported from; null for records made here. Kept so a migrated record can be traced back; never shown in public text"
+    },
+    "slug": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9_]*$",
+      "description": "a project slug, for example demo_robot"
+    },
+    "ts": {
+      "type": "string",
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}[T ]\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?(Z|[+-]\\d{2}:\\d{2})?$",
+      "description": "ISO 8601 time, for example 2030-01-01T00:00:00+00:00. New records always use T and carry the UTC offset; times exported from an older store may use a space and lack the offset."
+    },
+    "version": {
+      "type": "string",
+      "pattern": "^\\d+\\.\\d+\\.\\d+$",
+      "description": "a dataset or suite version chosen by the person, for example 0.2.0"
+    }
+  }
+}

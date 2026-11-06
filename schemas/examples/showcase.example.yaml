@@ -1,0 +1,36 @@
+# Example of kiln/showcase/1 (synthetic: demo_robot, 2030).
+schema: kiln/showcase/1
+project: demo_robot
+families:
+- illustrious
+seeds:
+- 2001
+- 2002
+prompts:
+- id: S01
+  text: waving hello in a sunny workshop
+  framing: full
+  cover: true
+- id: S02
+  text: reading a manual at a workbench
+  framing: medium
+  cover: true
+- id: S03
+  text: head and shoulders, soft rim light
+  framing: close
+  cover: false
+- id: S04
+  text: walking down a rainy street with an umbrella
+  framing: full
+  cover: false
+selection:
+  per_family: 4
+  max_close: 1
+  cover_order:
+  - S01
+  - S02
+negative_extra: ''
+hires:
+  mode: latent
+  scale: 1.5
+  denoise: 0.35

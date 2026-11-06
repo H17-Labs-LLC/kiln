@@ -1,0 +1,199 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:kiln:score-event:1",
+  "title": "a verdict on one eval cell",
+  "description": "One line of <home>/projects/<slug>/review/scores.jsonl: one judge's verdict on one rendered cell (run, column, prompt, seed). The latest line per (source, cell) wins; `kiln review readout` keeps the operator's and the assistant's apart and never passes one off as the other.",
+  "x-file": "<home>/projects/<slug>/review/scores.jsonl",
+  "x-owner": "person (verdicts)",
+  "x-kind": "event-line",
+  "type": "object",
+  "required": [
+    "schema",
+    "at",
+    "v",
+    "source",
+    "run",
+    "column",
+    "prompt",
+    "seed",
+    "verdict"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "schema": {
+      "const": "kiln/score-event/1",
+      "description": "the format and its version; always the first key"
+    },
+    "at": {
+      "$ref": "#/$defs/ts"
+    },
+    "v": {
+      "const": 1,
+      "description": "the line format's version: the number at the end of `schema`, so a reader can branch without parsing the string"
+    },
+    "source": {
+      "enum": [
+        "operator",
+        "assistant"
+      ],
+      "description": "who judged (the second source's configured name is stored as assistant)"
+    },
+    "by": {
+      "$ref": "#/$defs/by"
+    },
+    "run": {
+      "$ref": "#/$defs/run_id"
+    },
+    "column": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9_.-]+$",
+      "description": "for example s800, base or no-trigger"
+    },
+    "prompt": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9_-]+$"
+    },
+    "seed": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "suite": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "file": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/relpath"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "checks": {
+      "$ref": "#/$defs/checks"
+    },
+    "verdict": {
+      "enum": [
+        "good",
+        "ok",
+        "bad",
+        null
+      ]
+    },
+    "prompt_fit": {
+      "enum": [
+        "yes",
+        "partly",
+        "no",
+        null
+      ]
+    },
+    "tags": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^[a-z][a-z0-9_]*$"
+      },
+      "uniqueItems": true
+    },
+    "note": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "scores": {
+      "anyOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "identity": {
+              "type": [
+                "number",
+                "null"
+              ],
+              "minimum": 0,
+              "maximum": 5
+            },
+            "technical": {
+              "type": [
+                "number",
+                "null"
+              ],
+              "minimum": 0,
+              "maximum": 5
+            },
+            "anatomy_pass": {
+              "type": [
+                "boolean",
+                "null"
+              ]
+            },
+            "prompt_compliance": {
+              "type": [
+                "boolean",
+                "null"
+              ]
+            }
+          }
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "legacy_id": {
+      "$ref": "#/$defs/legacy_id"
+    }
+  },
+  "$defs": {
+    "by": {
+      "type": "string",
+      "minLength": 1,
+      "description": "the command that wrote the line, for example `kiln images label` (optional)"
+    },
+    "checks": {
+      "type": "object",
+      "propertyNames": {
+        "pattern": "^[a-z][a-z0-9_]*$"
+      },
+      "additionalProperties": {
+        "enum": [
+          "pass",
+          "fail",
+          "na"
+        ]
+      },
+      "description": "checklist key -> pass | fail | na (na = cannot be seen in this image)"
+    },
+    "legacy_id": {
+      "type": [
+        "string",
+        "integer",
+        "null"
+      ],
+      "description": "the record's id in the store it was exported from; null for records made here. Kept so a migrated record can be traced back; never shown in public text"
+    },
+    "relpath": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^(?![A-Za-z]:)(?!/)(?!.*\\\\)(?!(.*/)?\\.\\.(/|$)).+$",
+      "description": "a path relative to the root its record names: forward slashes, no drive, no leading slash, no `..`"
+    },
+    "run_id": {
+      "type": "string",
+      "pattern": "^run-\\d{8}-[a-z0-9][a-z0-9_-]*$",
+      "description": "a run id: run-YYYYMMDD-<slug>, for example run-20300101-001"
+    },
+    "ts": {
+      "type": "string",
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}[T ]\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?(Z|[+-]\\d{2}:\\d{2})?$",
+      "description": "ISO 8601 time, for example 2030-01-01T00:00:00+00:00. New records always use T and carry the UTC offset; times exported from an older store may use a space and lack the offset."
+    }
+  }
+}
