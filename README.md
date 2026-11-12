@@ -1,3 +1,10 @@
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="docs/brand/app-slots/readme-dark.svg">
+    <img alt="The kiln logo" src="docs/brand/app-slots/readme-light.svg" height="120">
+  </picture>
+</p>
+
 # kiln
 
 kiln is an AI-guided, file-based workflow for making LoRAs on one consumer GPU. It walks a person, or an AI agent

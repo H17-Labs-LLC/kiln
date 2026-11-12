@@ -1,0 +1,9 @@
+Symmetry checks on svg/kiln-cream.svg, rendered by Chromium at 4 px per unit
+(mirror checks are (differing pixels, gold pixels); stems are (width, centre) per stem;
+ circles are (min, max) radius of the edge pixels, then the design radius)
+
+the upright walls at mid height (width, centre): [(156.0, -355.01), (156.0, 354.99)]
+the diamond at its widest (width, centre): [(397.5, -0.01)]
+the top wall either side of the slot (width, centre): [(108.0, -102.01), (108.0, 101.99)]
+whole mark about its axis: (756, 6851120)
+edge pixels (scale for the mirror count): 18296
